@@ -2,40 +2,35 @@
 #include <stdlib.h>
 
 typedef struct {
-	int top;
 	int *items;
 	int index;
 	int size;
 } Stack;
 
 void create_stack(Stack *stack, int size) {
-	if(stack->size > 0) {
-		printf("Stack is already created.\n");
-		return;
-	}
 	stack->size = size;
-	stack->items = (int *) malloc(size* sizeof(int));
 	stack->index = -1;
+	stack->items = (int *) malloc(size* sizeof(int));
+	if(!stack->items) {
+		printf("Memory allocation failed\n");
+		exit(1);
+	}
 }
 
 int isEmpty(Stack *stack) {
-	if(stack->index >= 0) return 0;
-	else return 1;
+	return stack->index == -1;
 }
 
 int isFull(Stack *stack) {
-	if(stack->index == stack->size-1) return 1;
-	else return 0;
+	return stack->index == stack->size - 1;
 }
 
 void push(Stack *stack, int item) {
 	if(isFull(stack)) {
-		printf("The stack is full can't push items.\n'");
+		printf("The stack is full can't push items.\n");
 		return;
 	}
-	stack->index++;
-	stack->items[stack->index] = item;
-	stack->top = item;
+	stack->items[++stack->index] = item;
 	printf("Item pushed to the stack\n");
 }
 
@@ -44,14 +39,13 @@ void pop(Stack *stack) {
 		printf("The stack is empty can't pop items.\n");
 		return;
 	}
-	stack->index--;
-	stack->top = stack->items[stack->index];
-	printf("Item poped from the stack\n");
+	int popped = stack->items[stack->index--];
+	printf("Item popped: %d\n", popped);
 }
 
 void traverse(Stack *stack) {
 	int i;
-	printf("Top to bottom : \n");
+	printf("Bottom to top : \n");
 	for(i=0; i<=stack->index; i++) {
 		printf(" %d ", stack->items[i]);
 	}
@@ -62,7 +56,7 @@ void peekStack(Stack *stack) {
 	if(isEmpty(stack)) {
 		printf("The stack is empty.\n");
 	} else {
-		printf("The top item is : %d\n", stack->top);
+		printf("The top item is : %d\n", stack->items[stack->index]);
 	}
 }
 
@@ -73,7 +67,7 @@ void freeStack(Stack *stack) {
 
 int main(){
 	int choice, size, item;
-	Stack stack;
+	Stack stack = {NULL, -1, 0};
 	do {
 		printf("1. Create Stack\n");
 		printf("2. Push Item\n");
@@ -83,10 +77,15 @@ int main(){
 		printf("6. Check is empty\n");
 		printf("7. Check is full\n");
 		printf("8. Exit\n");
-		
+
 		printf("Enter your choice : ");
 		scanf("%d", &choice);
 		
+		if (stack.items == NULL && choice != 1 && choice != 8) {
+            printf("Error: Create the stack first!\n");
+            continue;
+        }
+
 		switch(choice) {
 			case 1:
 				printf("Enter the size of stack : ");
@@ -127,7 +126,7 @@ int main(){
 				break;
 			default:
 				printf("Invalid choice!\n");
-				
+
 		}
 	} while (choice != 8);
 	freeStack(&stack);

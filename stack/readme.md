@@ -58,7 +58,6 @@
 ```c
 // Structure of the stack
 typedef struct {
-	int top;
 	int *items;
 	int index;
 	int size;
@@ -67,31 +66,31 @@ typedef struct {
 // Function to create stack with required size
 void create_stack(Stack *stack, int size) {
 	stack->size = size;
-	stack->items = (int *) malloc(size* sizeof(int));
 	stack->index = -1;
+	stack->items = (int *) malloc(size* sizeof(int));
+	if(!stack->items) {
+		printf("Memory allocation failed\n");
+		exit(1);
+	}
 }
 
 // Function to check the stack is empty or not
 int isEmpty(Stack *stack) {
-	if(stack->index >= 0) return 0;
-	else return 1;
+	return stack->index == -1;
 }
 
 // Function to check the stack is full or not
 int isFull(Stack *stack) {
-	if(stack->index == stack->size-1) return 1;
-	else return 0;
+	return stack->index == stack->size - 1;
 }
 
 // Function to push items to the stack
 void push(Stack *stack, int item) {
 	if(isFull(stack)) {
-		printf("The stack is full can't push items.\n'");
+		printf("The stack is full can't push items.\n");
 		return;
 	}
-	stack->index++;
-	stack->items[stack->index] = item;
-	stack->top = item;
+	stack->items[++stack->index] = item;
 	printf("Item pushed to the stack\n");
 }
 
@@ -101,15 +100,14 @@ void pop(Stack *stack) {
 		printf("The stack is empty can't pop items.\n");
 		return;
 	}
-	stack->index--;
-	stack->top = stack->items[stack->index];
-	printf("Item poped from the stack\n");
+	int popped = stack->items[stack->index--];
+	printf("Item popped: %d\n", popped);
 }
 
 // Function to show the stack values
 void traverse(Stack *stack) {
 	int i;
-	printf("Top to bottom : \n");
+	printf("Bottom to top : \n");
 	for(i=0; i<=stack->index; i++) {
 		printf(" %d ", stack->items[i]);
 	}
@@ -121,7 +119,7 @@ void peekStack(Stack *stack) {
 	if(isEmpty(stack)) {
 		printf("The stack is empty.\n");
 	} else {
-		printf("The top item is : %d\n", stack->top);
+		printf("The top item is : %d\n", stack->items[stack->index]);
 	}
 }
 
