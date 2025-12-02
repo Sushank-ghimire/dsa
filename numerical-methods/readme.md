@@ -141,14 +141,90 @@ int main() {
 }
 ```
 
+---
+
+## 3. Secant Method
+
+### Description
+
+The Secant Method is a root-finding algorithm that uses a succession of roots of secant lines to approximate the root. It is similar to Newton-Raphson but doesn't require the derivative of the function.
+
+### How It Works
+
+1. Start with two initial guesses `x₀` and `x₁`
+2. Calculate the next approximation using the secant line formula
+3. Update: `x₀ = x₁` and `x₁ = x`
+4. Repeat until `|x₁ - x₀| < error` or maximum iterations reached
+
+### Formula
+
+$$x_{n+1} = \frac{x_{n-1} \cdot f(x_n) - x_n \cdot f(x_{n-1})}{f(x_n) - f(x_{n-1})}$$
+
+Or equivalently:
+$$x_{n+1} = x_n - f(x_n) \cdot \frac{x_n - x_{n-1}}{f(x_n) - f(x_{n-1})}$$
+
+### Convergence
+
+- **Order of Convergence**: Superlinear (~1.618, the golden ratio)
+- Faster than Bisection, slightly slower than Newton-Raphson
+
+### Advantages
+
+- Does not require derivative calculation
+- Faster than Bisection Method
+- Only needs function evaluations
+
+### Disadvantages
+
+- Requires two initial guesses
+- May diverge if initial guesses are poor
+- Fails if `f(x₁) = f(x₀)` (division by zero)
+
+---
+
+### Program Implementation
+
+```c
+// Function
+double f(double x) {
+    return x * x - 2; // f(x) = x^2 - 2
+}
+
+int main() {
+    double x0, x1, x, error;
+    int iteration = 0, maxIterations;
+    // x0, x1, maxIterations, and error are taken from user
+
+    do {
+        if (f(x1) == f(x0)) {
+            printf("Error: Division by zero.\n");
+            return 0;
+        }
+
+        x = (x0 * f(x1) - x1 * f(x0)) / (f(x1) - f(x0));
+        iteration++;
+
+        if (iteration >= maxIterations)
+            break;
+
+        x0 = x1;
+        x1 = x;
+
+    } while (fabs(x1 - x0) > error);
+    return 0;
+}
+```
+
+---
+
 ## Comparison
 
-| Feature              | Bisection Method               | Newton-Raphson Method          |
-| -------------------- | ------------------------------ | ------------------------------ |
-| Convergence Rate     | Linear                         | Quadratic                      |
-| Initial Requirements | Two points with opposite signs | One initial guess + derivative |
-| Reliability          | Always converges               | May diverge                    |
-| Speed                | Slow                           | Fast                           |
-| Derivative Needed    | No                             | Yes                            |
+| Feature              | Bisection Method               | Newton-Raphson Method          | Secant Method        |
+| -------------------- | ------------------------------ | ------------------------------ | -------------------- |
+| Convergence Rate     | Linear                         | Quadratic                      | Superlinear (~1.618) |
+| Initial Requirements | Two points with opposite signs | One initial guess + derivative | Two initial guesses  |
+| Reliability          | Always converges               | May diverge                    | May diverge          |
+| Speed                | Slow                           | Fast                           | Moderate             |
+| Derivative Needed    | No                             | Yes                            | No                   |
 
 ---
