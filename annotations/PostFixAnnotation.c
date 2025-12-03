@@ -87,9 +87,16 @@ int main() {
     	char c = expression[i];
 
     	// If operand ? goes straight to postfix
-    	if (checkIsOperation(c) == -1) {  
+    	if (checkIsOperation(c) == -1 && c != '(' && c != ')') {  
         	push(&postStack, c);
-    	} else {
+    	} else if (c == '(') {
+    		push(&opStack, c);
+		} else if (c == ')') {
+			while(opStack.index != -1 && opStack.items[opStack.index] != '(') {
+				push(&postStack, pop(&opStack));
+			}
+			pop(&opStack);
+		} else {
         	while (opStack.index != -1 && precedence(opStack.items[opStack.index]) >= precedence(c)) {
             	push(&postStack, pop(&opStack));
         	}
