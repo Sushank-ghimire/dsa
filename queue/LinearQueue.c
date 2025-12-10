@@ -44,7 +44,7 @@ int main()
   int choice, size;
   do
   {
-    printf("1. Initialize Queue\n");
+    printf("1. Initialize Queue (Linear Queue)\n");
     printf("2. Enque\n");
     printf("3. Deque\n");
     printf("4. Display Items\n");
@@ -55,6 +55,11 @@ int main()
     switch (choice)
     {
     case 1:
+      if (linearQueue.size && linearQueue.items != NULL)
+      {
+        printf("Queue is already initialized.\n");
+        break;
+      }
       printf("Enter the size of the queue : ");
       scanf("%d", &size);
       createQueue(&linearQueue, size);
