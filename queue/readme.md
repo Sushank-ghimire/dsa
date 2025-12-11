@@ -99,33 +99,55 @@ void freeQueue(Queue *queue)
 #### Linear Queue
 
 ```c
-// Enqueue Operation
-void Enqueue(Queue *queue)
+// To check Queue is empty or not
+int isEmpty(Queue queue)
 {
-  if (isFull(*queue)) {
-      printf("Queue is full\n");
-      return;
-  }
+  return queue.rear == -1;
+}
 
-  // If inserting the first element
-  if (queue->front == -1) {
-      queue->front = 0;
+// To check Queue is full or not
+int isFull(Queue queue)
+{
+  if (queue.rear == queue.size - 1)
+  {
+    return 1;
   }
+  return 0;
+}
 
+// Enqueue Operation
+void Enqueue(Queue *queue, int data)
+{
+  if (isFull(*queue))
+  {
+    printf("Queue is full, cannot enqueue.\n");
+    return;
+  }
+  if (queue->front == -1)
+  {
+    queue->front = 0;
+  }
   queue->items[++(queue->rear)] = data;
 }
 
 // Dequeue Operation
 void Dequeue(Queue *queue)
 {
-  if (isEmpty(*queue)) return;
-
-  int value = queue->items[queue->front++];
-
-  // Reset pointers if queue becomes empty after deletion
-  if (queue->front > queue->rear) {
+  if (isEmpty(*queue))
+  {
+    printf("Queue is empty can't dequeue items.\n");
+    return;
+  }
+  if (queue->front == queue->rear)
+  {
     queue->front = -1;
     queue->rear = -1;
   }
+  else
+  {
+   queue->items[queue->front++];
+  }
 }
 ```
+
+#### Circular Queue
