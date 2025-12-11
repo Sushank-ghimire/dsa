@@ -61,7 +61,9 @@
 
 This project implements a **Linear Queue** using a dynamic array in C.
 
-### Code Snippets
+### Code Snippets (Linear queue)
+
+#### Shared Code For All Queue Types
 
 ```c
 // Structure of the Queue
@@ -80,8 +82,23 @@ void createQueue(Queue *linearQueue, int size)
   linearQueue->front = -1;
   linearQueue->rear = -1;
   linearQueue->items = malloc(size * sizeof(int));
+  if (linearQueue->items == NULL)
+  {
+    printf("Failed to allocate memory for queue.\n");
+    exit(1);
+  }
 }
 
+// To free the heap memory
+void freeQueue(Queue *queue)
+{
+  free(queue->items);
+}
+```
+
+#### Linear Queue
+
+```c
 // Enqueue Operation
 void Enqueue(Queue *queue)
 {

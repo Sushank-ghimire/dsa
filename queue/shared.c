@@ -38,7 +38,7 @@ int isFull(Queue queue)
 
 void freeQueue(Queue *queue)
 {
-  free(queue);
+  free(queue->items);
 }
 
 void displayQueue(Queue queue)
