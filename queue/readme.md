@@ -187,7 +187,6 @@ void Dequeue(Queue *queue)
     printf("Queue is empty.\n");
     return;
   }
-  int data = queue->items[queue->front];
   if (queue->front == queue->rear)
   {
     queue->front = queue->rear = -1;
