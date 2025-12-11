@@ -22,6 +22,17 @@ int main() {
         return 0;
     }
 
+    if (f(a) == 0.0)
+    {
+      printf("\nRoot of the equation is: %.5f\n", a);
+      return 0;
+    }
+    if (f(b) == 0.0)
+    {
+      printf("\nRoot of the equation is: %.5f\n", b);
+      return 0;
+    }
+
     printf("\nIter \t   a\t\t   b\t\t   mid\t\t f(mid)\n");
 
     // Bisection Method
