@@ -151,3 +151,51 @@ void Dequeue(Queue *queue)
 ```
 
 #### Circular Queue
+
+```c
+// To check Queue is full or not
+int isFullCircular(Queue queue)
+{
+  return (queue.rear + 1) % queue.size == queue.front;
+}
+
+// To check Dequeue operation is valid or not
+int isEmptyCircular(Queue queue)
+{
+  return queue.front == -1;
+}
+
+// Enqueue Operation
+void Enqueue(Queue *queue, int data)
+{
+  if (isFullCircular(*queue))
+  {
+    printf("Queue is full.\n");
+    return;
+  }
+  if (queue->front == -1)
+    queue->front = 0;
+  queue->rear = (queue->rear + 1) % queue->size;
+  queue->items[queue->rear] = data;
+}
+
+// Dequeue Operation
+void Dequeue(Queue *queue)
+{
+  if (isEmptyCircular(*queue))
+  {
+    printf("Queue is empty.\n");
+    return;
+  }
+  int data = queue->items[queue->front];
+  if (queue->front == queue->rear)
+  {
+    queue->front = queue->rear = -1;
+  }
+  else
+  {
+    queue->front = (queue->front + 1) % queue->size;
+  }
+}
+
+```
