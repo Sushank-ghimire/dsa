@@ -217,14 +217,249 @@ int main() {
 
 ---
 
+## 4. Fixed Point Iteration Method
+
+### Description
+
+The Fixed Point Iteration Method is a root-finding algorithm that rewrites the equation `f(x) = 0` in the form `x = g(x)` and iteratively computes `x_{n+1} = g(x_n)` until convergence.
+
+### How It Works
+
+1. Rewrite `f(x) = 0` as `x = g(x)`
+2. Start with an initial guess `x₀`
+3. Calculate the next approximation: `x₁ = g(x₀)`
+4. Repeat until `|x_{n+1} - x_n| < tolerance` or maximum iterations reached
+
+### Formula
+
+$$x_{n+1} = g(x_n)$$
+
+### Convergence Condition
+
+- The method converges if `|g'(x)| < 1` in the neighborhood of the root
+- **Order of Convergence**: Linear (1)
+
+### Advantages
+
+- Simple to implement
+- Does not require derivative of original function
+- Can be applied to a wide range of problems
+
+### Disadvantages
+
+- May diverge if `|g'(x)| ≥ 1`
+- Choice of `g(x)` affects convergence
+- Slower than Newton-Raphson
+
+---
+
+### Program Implementation
+
+```c
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+
+#define TOL 1.e-6
+#define MAX_ITERATION 50
+
+// function g(x)
+double g(double x)
+{
+  return cbrt(1 - x); // cube root of (1-x)
+}
+
+int main()
+{
+  double x0, x1;
+  int iteration = 0;
+  printf("Enter initial guess : ");
+  scanf("%lf", &x0);
+
+  do
+  {
+    x1 = g(x0);
+    printf("Iteration %d: x = %lf\n", iteration + 1, x1);
+
+    if (fabs(x1 - x0) < TOL)
+    {
+      printf("Root found : %lf\n", x1);
+      return 0;
+    }
+    x0 = x1;
+    iteration++;
+  } while (iteration < MAX_ITERATION);
+  printf("\nMethod did not converge.\n");
+  return 0;
+}
+```
+
+**Key Points**:
+
+- Requires rewriting `f(x) = 0` as `x = g(x)`
+- Convergence depends on `|g'(x)| < 1`
+- Time: O(n) iterations, each O(1)
+- Simple but may not always converge
+
+---
+
+## 5. Synthetic Division
+
+### Description
+
+Synthetic Division is a simplified method for dividing a polynomial by a linear divisor of the form `(x - c)`. It is used to find quotient and remainder efficiently without full polynomial long division.
+
+### How It Works
+
+1. Write the coefficients of the polynomial in descending order of powers
+2. Bring down the leading coefficient
+3. Multiply by `c` and add to the next coefficient
+4. Repeat until all coefficients are processed
+5. The last value is the remainder; the rest form the quotient
+
+### Formula
+
+For polynomial `P(x) = aₙxⁿ + aₙ₋₁xⁿ⁻¹ + ... + a₁x + a₀` divided by `(x - c)`:
+
+$$b_n = a_n$$
+$$b_i = a_i + c \cdot b_{i+1} \quad \text{for } i = n-1, n-2, ..., 0$$
+
+- Quotient: `bₙxⁿ⁻¹ + bₙ₋₁xⁿ⁻² + ... + b₁`
+- Remainder: `b₀`
+
+### Applications
+
+- Polynomial division
+- Evaluating polynomial at a point (Remainder Theorem: `P(c) = remainder`)
+- Finding roots of polynomials
+- Deflating polynomials after finding a root
+
+### Advantages
+
+- Much faster than long division
+- Easy to implement
+- Useful for repeated evaluations
+
+### Disadvantages
+
+- Only works for linear divisors `(x - c)`
+- Limited to polynomial functions
+
+---
+
+### Program Implementation
+
+```c
+#include <stdio.h>
+#define MAX_SIZE 4
+
+void displayPolynomial(int degree, float coeff[MAX_SIZE])
+{
+  int i;
+  for (i = degree; i >= 0; i--)
+  {
+    if (coeff[i] != 0)
+    {
+      if (i != degree && coeff[i] > 0)
+        printf(" + ");
+      else if (coeff[i] < 0)
+        printf(" - ");
+      printf("%.0f", coeff[i] < 0 ? -coeff[i] : coeff[i]);
+      if (i > 0)
+        printf("x");
+      if (i > 1)
+        printf("^%d", i);
+    }
+  }
+  printf("\n");
+}
+
+int main()
+{
+  int degree, i, choice;
+  float coefficients[MAX_SIZE]; // degree <= 3
+  float divisor;                // divisor x-c
+
+  // Taking the degree from the user
+  do
+  {
+    printf("Enter the degree of the polynomial (max 3): ");
+    scanf("%d", &degree);
+    if (degree < 0 || degree > 3)
+      printf("Please enter a valid degree! Enter a degree between 0 and 3.\n");
+  } while (degree < 0 || degree > 3);
+
+  // Taking coefficients from user
+  for (i = degree; i >= 0; i--)
+  {
+    printf("Enter the coefficient of x^%d: ", i);
+    scanf("%f", &coefficients[i]);
+  }
+
+  // Displaying the polynomial
+  printf("Your polynomial is : ");
+  displayPolynomial(degree, coefficients);
+
+  // Input divisor from the user
+  printf("Enter the value of c for divisor (x-c): ");
+  scanf("%f", &divisor);
+
+  // Synthetic Division
+  float quotient[degree - 1];
+  float temp = coefficients[degree];
+  quotient[degree - 1] = temp;
+
+  for (i = degree - 1; i >= 0; i--)
+  {
+    if (i != 0)
+    {
+      temp = temp * divisor + coefficients[i];
+      quotient[i - 1] = temp;
+    }
+    else
+      temp = temp * divisor + coefficients[i]; // remainder
+  }
+
+  // Quotient
+  printf("Quotient : ");
+  displayPolynomial(degree - 1, quotient);
+
+  // Remainder
+  printf("Remainder : %.0f\n", temp);
+  return 0;
+}
+```
+
+**Key Points**:
+
+- Input: Polynomial coefficients and divisor value `c`
+- Output: Quotient polynomial and remainder
+- Time: O(n) where n is the degree
+- Uses Remainder Theorem: `P(c) = remainder`
+
+---
+
 ## Comparison
 
-| Feature              | Bisection Method               | Newton-Raphson Method          | Secant Method        |
-| -------------------- | ------------------------------ | ------------------------------ | -------------------- |
-| Convergence Rate     | Linear                         | Quadratic                      | Superlinear (~1.618) |
-| Initial Requirements | Two points with opposite signs | One initial guess + derivative | Two initial guesses  |
-| Reliability          | Always converges               | May diverge                    | May diverge          |
-| Speed                | Slow                           | Fast                           | Moderate             |
-| Derivative Needed    | No                             | Yes                            | No                   |
+| Feature              | Bisection        | Newton-Raphson  | Secant       | Fixed Point    | Synthetic Division  |
+| -------------------- | ---------------- | --------------- | ------------ | -------------- | ------------------- |
+| Convergence Rate     | Linear           | Quadratic       | Superlinear  | Linear         | N/A (exact)         |
+| Initial Requirements | Interval [a,b]   | x₀ + derivative | Two guesses  | x₀ + g(x) form | Coefficients + c    |
+| Reliability          | Always converges | May diverge     | May diverge  | May diverge    | Always works        |
+| Speed                | Slow             | Fast            | Moderate     | Slow-Moderate  | Fast                |
+| Derivative Needed    | No               | Yes             | No           | No             | No                  |
+| Use Case             | Root finding     | Root finding    | Root finding | Root finding   | Polynomial division |
+
+---
+
+## Complexity Cheatsheet
+
+| Method             | Time Complexity    | Space Complexity | Convergence Order |
+| ------------------ | ------------------ | ---------------- | ----------------- |
+| Bisection          | O(log((b-a)/ε))    | O(1)             | Linear (1)        |
+| Newton-Raphson     | O(log(log(1/ε)))   | O(1)             | Quadratic (2)     |
+| Secant             | O(log(1/ε)/log(φ)) | O(1)             | ~1.618            |
+| Fixed Point        | O(n) iterations    | O(1)             | Linear (1)        |
+| Synthetic Division | O(n)               | O(n)             | Exact (1 pass)    |
 
 ---
