@@ -7,9 +7,9 @@ typedef struct Node {
   struct Node *next;
 } Node;
 
-int inputData() {
+int inputData(char *message) {
   int data;
-  printf("Enter data to insert : ");
+  printf("%s", message);
   scanf("%d", &data);
   return data;
 }
@@ -32,7 +32,7 @@ void displayLinkedList(Node *head) {
 }
 
 void insertNode(Node **head) {
-  int data = inputData();
+  int data = inputData("Enter data to insert in node : ");
   Node *newNode = (Node *) malloc(sizeof(Node));
   newNode->data = data;
   newNode->next = NULL;
@@ -52,7 +52,7 @@ void insertNode(Node **head) {
 }
 
 void insertNodeAtHead(Node **head) {
-  int data = inputData();
+  int data = inputData("Enter data to insert in node : ");
   Node *newNode = (Node *) malloc(sizeof(Node));
 
   if(newNode == NULL) {
@@ -70,6 +70,25 @@ void insertNodeAtHead(Node **head) {
 }
 
 void insertNodeAtIndex(Node **head) {
+  int index = inputData("Enter the index for the node : ");
+  int data = inputData("Enter data to insert in the node : ");
+  Node *newNode = (Node *) malloc(sizeof(Node));
+  Node *temp = *head, *prev;
+  int i = 0;
+  while(temp != NULL && i != index - 1) {
+    prev = temp;
+    temp = temp->next;
+    i++;
+  }
+  if(temp == NULL) {
+    printf("The index provided by the user not found\n");
+    return;
+  }
+  newNode->data = data;
+  newNode->prev = prev;
+  prev->next = newNode;
+  newNode->next = temp;
+  printf("Node inserted.\n");
 }
 
 void deleteFirstNode(Node **head) {
