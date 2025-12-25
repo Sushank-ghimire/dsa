@@ -34,6 +34,10 @@ void displayLinkedList(Node *head) {
 void insertNode(Node **head) {
   int data = inputData("Enter data to insert in node : ");
   Node *newNode = (Node *) malloc(sizeof(Node));
+  if(newNode == NULL) {
+    printf("Memory allocation failed.\n");
+    return;
+  }
   newNode->data = data;
   newNode->next = NULL;
   newNode->prev = NULL;
@@ -73,10 +77,9 @@ void insertNodeAtIndex(Node **head) {
   int index = inputData("Enter the index for the node : ");
   int data = inputData("Enter data to insert in the node : ");
   Node *newNode = (Node *) malloc(sizeof(Node));
-  Node *temp = *head, *prev;
+  Node *temp = *head;
   int i = 0;
-  while(temp != NULL && i != index - 1) {
-    prev = temp;
+  while(temp != NULL && i < index) {
     temp = temp->next;
     i++;
   }
@@ -85,15 +88,15 @@ void insertNodeAtIndex(Node **head) {
     return;
   }
   newNode->data = data;
-  newNode->prev = prev;
-  prev->next = newNode;
+  newNode->prev = temp->prev;
+  temp->prev->next = newNode;
   newNode->next = temp;
   printf("Node inserted.\n");
 }
 
 void freeMemory(Node *head) {
   Node *temp;
-  while(isNull(head)) {
+  while(!isNull(head)) {
     temp = head;
     head = head->next;
     free(temp);
@@ -101,22 +104,67 @@ void freeMemory(Node *head) {
 }
 
 void deleteFirstNode(Node **head) {
+  if (*head == NULL) return;
+  Node *temp = *head;
+  *head = temp->next;
+  if (*head != NULL)
+    (*head)->prev = NULL;
+  printf("First node deleted successfully.\n");
+  free(temp);
+}
+
+
+void deleteLastNode(Node **head) {
+  if(isNull(*head)) {
+    printf("Node is empty.\n");
+    return;
+  }
+  Node *temp = *head;
+  if(temp->next == NULL) {
+    free(temp);
+    *head = NULL;
+    return;
+  }
+  while (temp->next != NULL)
+    temp = temp->next;
+  temp->prev->next = NULL;
+  free(temp);
+  printf("Node deleted successfully\n");
+}
+
+void deleteIndexedNode(Node **head) {
   if(isNull(*head)) {
     printf("Linked list is empty.\n");
     return;
   }
+  int index = inputData("Enter index to delete : ");
   Node *temp = *head;
-  temp = temp->next;
-  temp->prev = NULL;
-  *head = temp;
-  printf("First node deleted successfully.\n");
-  freeMemory(temp);
-}
+  int i = 0;
+  if(index == 0) {
+    *head = temp->next;
+    if(!isNull(*head)) {
+      (*head)->prev = NULL;
+    }
+    free(temp);
+    printf("Node deleted.\n");
+    return;
+  }
 
-void deleteLastNode(Node **head) {
-}
+  while(temp != NULL && i < index - 1) {
+    temp = temp->next;
+    i++;
+  }
+  if(temp == NULL) {
+    printf("The index provided by the user not found\n");
+    return;
+  }
+  if(temp->prev != NULL)
+    temp->prev->next = temp->next;
 
-void deleteIndexedNode(Node **head) {
+  if(temp->next != NULL)
+    temp->next->prev = temp->prev;
+  free(temp);
+  printf("Node deleted.\n");
 }
 
 
