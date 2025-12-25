@@ -91,15 +91,6 @@ void insertNodeAtIndex(Node **head) {
   printf("Node inserted.\n");
 }
 
-void deleteFirstNode(Node **head) {
-}
-
-void deleteLastNode(Node **head) {
-}
-
-void deleteIndexedNode(Node **head) {
-}
-
 void freeMemory(Node *head) {
   Node *temp;
   while(isNull(head)) {
@@ -108,6 +99,26 @@ void freeMemory(Node *head) {
     free(temp);
   }
 }
+
+void deleteFirstNode(Node **head) {
+  if(isNull(*head)) {
+    printf("Linked list is empty.\n");
+    return;
+  }
+  Node *temp = *head;
+  temp = temp->next;
+  temp->prev = NULL;
+  *head = temp;
+  printf("First node deleted successfully.\n");
+  freeMemory(temp);
+}
+
+void deleteLastNode(Node **head) {
+}
+
+void deleteIndexedNode(Node **head) {
+}
+
 
 int main() {
   Node *head = NULL;
