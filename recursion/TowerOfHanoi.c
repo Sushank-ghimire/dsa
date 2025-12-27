@@ -20,16 +20,32 @@ void towerOfHanoi(int n, char source, char dest, char auxiliary)
 
 int main()
 {
-  int disks;
-  printf("Enter the number of disks : ");
-  scanf("%d", &disks);
-  if (disks <= 0)
-  {
-    printf("Invalid input! \n");
-    return 1;
-  }
-  printf("Total steps required are : %d.\n", (int)pow(2, disks) - 1);
-  // A, B, C (Source, Destination, Auxiliary) stacks
-  towerOfHanoi(disks, 'A', 'C', 'B');
+  int disks, choice;
+  do {
+    printf("1. Find Solution For n Disks.\n");
+    printf("2. Exit\n");
+    printf("Enter your choice : ");
+    scanf("%d", &choice);
+    switch (choice) {
+      case 1:
+        printf("Enter the number of disks : ");
+        scanf("%d", &disks);
+        if (disks <= 0)
+        {
+          printf("Invalid input! \n");
+          return 1;
+        }
+        printf("Total steps required are : %d.\n", (int)pow(2, disks) - 1);
+        // A, B, C (Source, Destination, Auxiliary) stacks
+        towerOfHanoi(disks, 'A', 'C', 'B');
+        break;
+      case 2:
+        printf("Exiting program...\n");
+        break;
+      default:
+        printf("Invalid choice\n");
+
+    }
+  }while (choice != 2);
   return 0;
 }
