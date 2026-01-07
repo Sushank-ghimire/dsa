@@ -49,7 +49,7 @@ int main()
     }
   }
   int finalResult = pop(&stack) - '0';
-  printf("The value of the prefix expression is: %d\n", finalResult);
+  printf("The value of the postfix expression is: %d\n", finalResult);
   freeMemory(&stack);
   return 0;
 }

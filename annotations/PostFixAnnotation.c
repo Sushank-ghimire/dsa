@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include "shared.h"
 
@@ -38,7 +37,7 @@ int main() {
     	}
 	}
 
-	while (opStack.index != -1) {
+	while (opStack.index != 0) {
     	push(&postStack, pop(&opStack));
 	}
 	printf("\nPostfix Expression : ");
