@@ -1,44 +1,76 @@
 #include <stdio.h>
 #include <math.h>
 
-// Function
-double f(double x) {
-    return x * x - 2;
-}
+// Function Declarations
+double f(double x);
+void secantMethod();
+
 
 int main() {
-    double x0, x1, x, error;
-    int iteration = 0, maxIterations;
+  int choice;
 
-    printf("Enter the initial guess x0: ");
-    scanf("%lf", &x0);
+  do {
+    printf("\n1. Secant Method");
+    printf("\n2. Exit");
+    printf("\nEnter your choice: ");
+    scanf("%d", &choice);
 
-    printf("Enter the initial guess x1: ");
-    scanf("%lf", &x1);
+    switch (choice) {
+      case 1:
+        secantMethod();
+        break;
 
-    printf("Enter maximum iterations and allowed error: ");
-    scanf("%d %lf", &maxIterations, &error);
+      case 2:
+        printf("\nExiting program...\n");
+        break;
 
-    do {
-        if (f(x1) == f(x0)) {
-            printf("Error: Division by zero.\n");
-            return 0;
-        }
+      default:
+        printf("\nInvalid choice! Try again.\n");
+    }
+  } while (choice != 2);
 
-        x = (x0 * f(x1) - x1 * f(x0)) / (f(x1) - f(x0));
-
-        printf("Iteration No-%d    x = %lf\n", ++iteration, x);
-
-        if (iteration >= maxIterations)
-            break;
-
-        x0 = x1;
-        x1 = x;
-
-    } while (fabs(x1 - x0) > error);
-
-    printf("\nThe required solution is %.5lf\n", x);
-
-    return 0;
+  return 0;
 }
 
+// function: f(x) = x^3 - x - 1
+double f(double x) {
+  return x*x*x - x - 1;
+}
+
+// Secant Method function
+void secantMethod() {
+  double x0, x1, x2, tolerance;
+  int maxIterations, iteration = 0;
+
+  printf("\nEnter first initial guess x0: ");
+  scanf("%lf", &x0);
+
+  printf("Enter second initial guess x1: ");
+  scanf("%lf", &x1);
+
+  printf("Enter maximum iterations: ");
+  scanf("%d", &maxIterations);
+
+  printf("Enter allowed error (tolerance): ");
+  scanf("%lf", &tolerance);
+
+  printf("\nIteration\t x\n");
+
+  do {
+    if (f(x1) - f(x0) == 0) {
+      printf("Mathematical error (division by zero).\n");
+      return;
+    }
+
+    x2 = (x0 * f(x1) - x1 * f(x0)) / (f(x1) - f(x0));
+    iteration++;
+
+    printf("%d\t\t %.6lf\n", iteration, x2);
+
+    x0 = x1;
+    x1 = x2;
+
+  } while (fabs(f(x2)) > tolerance && iteration < maxIterations);
+
+  printf("\nThe approximate root is: %.5lf\n", x2);
+}
