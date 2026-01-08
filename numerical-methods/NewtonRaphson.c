@@ -1,17 +1,45 @@
 #include <stdio.h>
 #include <math.h>
 
-// define the function for the root finding
-double f(double x) {
-	return x*x - 4; // function f(x) = x^2-4
-}
-
-// define the derative of the function
-double fd(double x) {
-	return 2*x;
-}
+// Function Declarations
+double f(double x);
+double fd(double x);
+void NewtonRaphsonMethod();
 
 int main() {
+  int choice;
+
+  do {
+    printf("\n1. Newton Raphson Method");
+    printf("\n2. Exit");
+    printf("\nEnter your choice: ");
+    scanf("%d", &choice);
+
+    switch (choice) {
+      case 1:
+        NewtonRaphsonMethod();
+        break;
+      case 2:
+        printf("\nExiting program...\n");
+        break;
+      default:
+        printf("\nInvalid choice! Try again.\n");
+    }
+  } while (choice != 2);
+
+  return 0;
+}
+
+// Function definations
+double f(double x) {
+  return x * x * x - x - 1;
+}
+
+double fd(double x) {
+  return 3*x*x - 1;
+}
+
+void NewtonRaphsonMethod() {
 	int iteration, maxIterations;
 	double x0, x1, error, h;
 	printf("Enter x0 and allowed error : ");
@@ -27,9 +55,8 @@ int main() {
 
 		if(fabs(h) < error) {
 			printf("\nAfter %d iterations, root = %.5lf\n", iteration, x1);
-			return 0;
+			return;
 		}
 		x0 = x1;
 	}
-	return 0;
 }
