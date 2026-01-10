@@ -1,6 +1,33 @@
 #include <stdio.h>
 #define MAX_SIZE 4
 
+void displayPolynomial(int degree, float coefficient[MAX_SIZE]);
+void syntheticDivision();
+
+int main() {
+  int choice;
+
+  do {
+    printf("\n1. Synthetic Division");
+    printf("\n2. Exit");
+    printf("\nEnter your choice: ");
+    scanf("%d", &choice);
+
+    switch (choice) {
+      case 1:
+        syntheticDivision();
+        break;
+      case 2:
+        printf("\nExiting program...\n");
+        break;
+      default:
+        printf("\nInvalid choice! Try again.\n");
+    }
+  } while (choice != 2);
+
+  return 0;
+}
+
 void displayPolynomial(int degree, float coeff[MAX_SIZE])
 {
   int i;
@@ -22,7 +49,7 @@ void displayPolynomial(int degree, float coeff[MAX_SIZE])
   printf("\n");
 }
 
-int main()
+void syntheticDivision()
 {
   int degree, i, choice;
   float coefficients[MAX_SIZE]; // degree <= 3
@@ -74,5 +101,4 @@ int main()
 
   // Remainder
   printf("Remainder : %.0f\n", temp);
-  return 0;
 }
