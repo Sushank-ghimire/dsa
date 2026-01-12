@@ -209,7 +209,7 @@ int main() {
         displayLinkedList(head);
         break;
       default:
-      printf("Invalid choice!\n");
+        printf("Invalid choice!\n");
         break;
     }
   }while (choice != 7);
