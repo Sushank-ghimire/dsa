@@ -11,22 +11,22 @@ void insertNode(Node **head) {
 	int data;
 	printf("Enter the data to insert in the node : ");
 	scanf("%d", &data);
-    Node *newNode = malloc(sizeof(Node));
-    newNode->data = data;
-    newNode->next = newNode;
+  Node *newNode = malloc(sizeof(Node));
+  newNode->data = data;
+  newNode->next = newNode;
 
-    if (*head == NULL) {
-        *head = newNode;
-        return;
-    }
+  if (*head == NULL) {
+    *head = newNode;
+    return;
+  }
 
-    Node *temp = *head;
+  Node *temp = *head;
 
-    while (temp->next != *head)
-        temp = temp->next;
+  while (temp->next != *head)
+    temp = temp->next;
 
-    temp->next = newNode;
-    newNode->next = *head;
+  temp->next = newNode;
+  newNode->next = *head;
 }
 
 // Node insertion at head
