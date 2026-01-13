@@ -1,0 +1,72 @@
+#include <stdio.h>
+#define MAX 40
+
+void NewtonsDividedDiff();
+
+int main() {
+  int choice;
+
+  do {
+    printf("\n1. Newton's Divided Difference");
+    printf("\n2. Exit");
+    printf("\nEnter your choice: ");
+    scanf("%d", &choice);
+
+    switch (choice) {
+      case 1:
+        NewtonsDividedDiff();
+        break;
+      case 2:
+        printf("\nExiting program...\n");
+        break;
+      default:
+        printf("Invalid choice!\n");
+    }
+  } while (choice != 2);
+
+  return 0;
+}
+
+void NewtonsDividedDiff() {
+  float x[MAX], diffTable[MAX][MAX], point, interpolatedY = 0, productTerm;
+  int terms, i, j, flag = 1;
+  printf("Enter the number of terms of the table : ");
+  scanf("%d", &terms);
+  printf("Enter the corresponding values of x & y: \n");
+  for(i=0; i<terms; i++) {
+    printf("Enter the value for x[%d]: ", i+1);
+    scanf("%f", &x[i]);
+    printf("Enter the value for y[%d]: ", i+1);
+    scanf("%f", &diffTable[i][0]);
+  }
+
+  // Divided difference table calucation
+  for(j=1; j<terms; j++) {
+    for(i=0; i<terms - j; i++) {
+      diffTable[i][j] = (diffTable[i+1][j-1]) - diffTable[i][j-1] / (x[i+j] - x[i]);
+    }
+  }
+
+  printf("\nDivided Difference Table:\n");
+  for (i = 0; i < terms; i++) {
+    for (j = 0; j < terms - i; j++) {
+      printf("%8.4f ", diffTable[i][j]);
+    }
+    printf("\n");
+  }
+
+  while (flag) {
+    printf("Enter the value of the x to find value of y: ");
+    scanf("%f", &point);
+
+    interpolatedY = diffTable[0][0];
+    productTerm = 1;
+    for(i=1; i<terms; i++) {
+      productTerm *= (point - x[i-1]);
+      interpolatedY += productTerm * diffTable[0][i];
+    }
+    printf("\nThe interpolated value at x = %.4f is y = %.4f",point, interpolatedY);
+    printf("\nDo you want to continue with same data points (0 to exit) ? ");
+    scanf("%d", &flag);
+  }
+}

@@ -58,7 +58,7 @@ void LagrangeInterpolation() {
       }
       interpolatedY = interpolatedY + ((numerator/denominator)*y[i]);
     }
-    printf("\nThe respective value of the variable is : %f", interpolatedY);
+    printf("\nThe respective value of the variable is : %.2f", interpolatedY);
     printf("\nDo you want to continue with same data points (0 to exit) ? ");
     scanf("%d", &flag);
   }
