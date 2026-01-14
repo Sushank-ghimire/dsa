@@ -439,27 +439,433 @@ int main()
 
 ---
 
-## Comparison
+## 6. Lagrange's Interpolation
 
-| Feature              | Bisection        | Newton-Raphson  | Secant       | Fixed Point    | Synthetic Division  |
-| -------------------- | ---------------- | --------------- | ------------ | -------------- | ------------------- |
-| Convergence Rate     | Linear           | Quadratic       | Superlinear  | Linear         | N/A (exact)         |
-| Initial Requirements | Interval [a,b]   | x₀ + derivative | Two guesses  | x₀ + g(x) form | Coefficients + c    |
-| Reliability          | Always converges | May diverge     | May diverge  | May diverge    | Always works        |
-| Speed                | Slow             | Fast            | Moderate     | Slow-Moderate  | Fast                |
-| Derivative Needed    | No               | Yes             | No           | No             | No                  |
-| Use Case             | Root finding     | Root finding    | Root finding | Root finding   | Polynomial division |
+### Description
+
+Lagrange's Interpolation is a polynomial interpolation method that finds a polynomial passing through a given set of data points. It constructs the interpolating polynomial using Lagrange basis polynomials.
+
+### How It Works
+
+1. Given n data points (x₀, y₀), (x₁, y₁), ..., (xₙ₋₁, yₙ₋₁)
+2. Construct Lagrange basis polynomials Lᵢ(x) for each point
+3. The interpolating polynomial is the sum of yᵢ × Lᵢ(x)
+
+### Formula
+
+$$P(x) = \sum_{i=0}^{n-1} y_i \cdot L_i(x)$$
+
+Where the Lagrange basis polynomial is:
+
+$$L_i(x) = \prod_{j=0, j \neq i}^{n-1} \frac{x - x_j}{x_i - x_j}$$
+
+### Advantages
+
+- Works for unequally spaced data points
+- No need to compute difference tables
+- Straightforward formula
+
+### Disadvantages
+
+- Computationally expensive for large datasets
+- Adding new points requires complete recalculation
+- Can suffer from Runge's phenomenon for high-degree polynomials
+
+---
+
+### Program Implementation
+
+```c
+#include <stdio.h>
+#define MAX 50
+
+void LagrangeInterpolation() {
+  float x[MAX], y[MAX], point, numerator, denominator, interpolatedY = 0;
+  int i, j, terms;
+  printf("Enter the number of terms of the table : ");
+  scanf("%d", &terms);
+  printf("Enter the respective values of x & y: \n");
+  for(i=0; i<terms; i++) {
+    printf("Enter the value for x[%d]: ", i+1);
+    scanf("%f", &x[i]);
+    printf("Enter the value for y[%d]: ", i+1);
+    scanf("%f", &y[i]);
+  }
+
+  printf("Enter the value of the x to find value of y: ");
+  scanf("%f", &point);
+  for(i=0; i<terms; i++) {
+    numerator = 1;
+    denominator = 1;
+    for(j=0; j<terms; j++) {
+      if(i != j) {
+        numerator = numerator * (point - x[j]);
+        denominator = denominator * (x[i] - x[j]);
+      }
+    }
+    interpolatedY = interpolatedY + ((numerator / denominator) * y[i]);
+  }
+  printf("\nThe respective value of the variable is : %.2f", interpolatedY);
+}
+```
+
+**Key Points**:
+
+- Input: Set of data points (x, y)
+- Output: Interpolated y value for given x
+- Time: O(n²) for each interpolation
+- Space: O(n)
+
+---
+
+## 7. Newton's Interpolation (Forward & Backward Difference)
+
+### Description
+
+Newton's Interpolation methods use finite differences to construct interpolating polynomials. Forward difference is used for interpolation near the beginning of the table, while backward difference is used near the end.
+
+### Newton's Forward Difference Formula
+
+$$P(x) = y_0 + p \cdot \Delta y_0 + \frac{p(p-1)}{2!} \cdot \Delta^2 y_0 + \frac{p(p-1)(p-2)}{3!} \cdot \Delta^3 y_0 + ...$$
+
+Where:
+$$p = \frac{x - x_0}{h}$$
+
+### Newton's Backward Difference Formula
+
+$$P(x) = y_n + p \cdot \nabla y_n + \frac{p(p+1)}{2!} \cdot \nabla^2 y_n + \frac{p(p+1)(p+2)}{3!} \cdot \nabla^3 y_n + ...$$
+
+Where:
+$$p = \frac{x - x_n}{h}$$
+
+### How It Works
+
+1. Construct a difference table (forward or backward)
+2. Calculate step size h = x₁ - x₀
+3. Compute p based on the interpolation point
+4. Apply the respective formula
+
+### Advantages
+
+- Efficient for equally spaced data
+- Easy to add new data points
+- Difference table can be reused
+
+### Disadvantages
+
+- Requires equally spaced data points
+- Forward method less accurate at end of table
+- Backward method less accurate at beginning of table
+
+---
+
+### Program Implementation
+
+```c
+#include <stdio.h>
+#define MAX 40
+
+void NewtonForwardDiff() {
+  float x[MAX], diffTable[MAX][MAX], point, interpolatedY = 0, productTerm, p, stepSize, factorial;
+  int terms, i, j;
+
+  printf("Enter the number of terms of the table : ");
+  scanf("%d", &terms);
+  printf("Enter the corresponding values of x & y: \n");
+  for(i=0; i<terms; i++) {
+    printf("Enter the value for x[%d]: ", i+1);
+    scanf("%f", &x[i]);
+    printf("Enter the value for y[%d]: ", i+1);
+    scanf("%f", &diffTable[i][0]);
+  }
+
+  // Forward difference table calculation
+  for(j=1; j<terms; j++) {
+    for(i=0; i<terms - j; i++) {
+      diffTable[i][j] = diffTable[i+1][j-1] - diffTable[i][j-1];
+    }
+  }
+
+  stepSize = x[1] - x[0];
+
+  printf("Enter the value of the x to find value of y: ");
+  scanf("%f", &point);
+
+  p = (point - x[0]) / stepSize;
+  interpolatedY = diffTable[0][0];
+  productTerm = 1;
+  factorial = 1;
+
+  for(i=1; i<terms; i++) {
+    productTerm *= (p - (i - 1));
+    factorial *= i;
+    interpolatedY += (productTerm / factorial) * diffTable[0][i];
+  }
+
+  printf("\nThe interpolated value at x = %.4f is y = %.4f", point, interpolatedY);
+  printf("\nDo you want to continue (0 to exit) ? ");
+  scanf("%d", &flag);
+}
+
+void NewtonBackwardDiff() {
+  float x[MAX], diffTable[MAX][MAX], point, interpolatedY = 0, productTerm, p, stepSize, factorial;
+  int terms, i, j;
+
+  // Similar input as forward
+
+  // Backward difference table calculation
+  for(j=1; j<terms; j++) {
+    for(i=terms - 1; i>=j; i--) {
+      diffTable[i][j] = diffTable[i][j-1] - diffTable[i-1][j-1];
+    }
+  }
+
+  stepSize = x[1] - x[0];
+
+  printf("Enter the value of the x to find value of y: ");
+  scanf("%f", &point);
+
+  p = (point - x[terms-1]) / stepSize;
+  interpolatedY = diffTable[terms - 1][0];
+  productTerm = 1;
+  factorial = 1;
+
+  for(i=1; i<terms; i++) {
+    productTerm *= (p + (i - 1));
+    factorial *= i;
+    interpolatedY += (productTerm / factorial) * diffTable[terms - 1][i];
+  }
+
+  printf("\nThe interpolated value at x = %.4f is y = %.4f", point, interpolatedY);
+}
+```
+
+**Key Points**:
+
+- Use Forward difference for interpolation near the beginning
+- Use Backward difference for interpolation near the end
+- Time: O(n²) for table construction, O(n) for each interpolation
+- Space: O(n²) for difference table
+
+---
+
+## 8. Horner's Method
+
+### Description
+
+Horner's Method is an efficient algorithm for evaluating polynomials. It reduces the number of multiplications by rewriting the polynomial in nested form.
+
+### How It Works
+
+1. Start with the leading coefficient
+2. Multiply by x and add the next coefficient
+3. Repeat until all coefficients are processed
+
+### Formula
+
+For polynomial `P(x) = aₙxⁿ + aₙ₋₁xⁿ⁻¹ + ... + a₁x + a₀`:
+
+Rewrite as:
+$$P(x) = (...((a_n \cdot x + a_{n-1}) \cdot x + a_{n-2}) \cdot x + ...) \cdot x + a_0$$
+
+### Algorithm
+
+```
+result = aₙ
+for i = n-1 down to 0:
+    result = result × x + aᵢ
+return result
+```
+
+### Advantages
+
+- Minimizes number of operations (n multiplications + n additions)
+- Numerically stable
+- Simple to implement
+
+### Disadvantages
+
+- Only evaluates polynomial at one point at a time
+- Not suitable for symbolic computation
+
+---
+
+### Program Implementation
+
+```c
+#include <stdio.h>
+#define MAX_SIZE 4
+
+void displayPolynomial(int degree, float coeff[MAX_SIZE]) {
+  int i;
+  for (i = degree; i >= 0; i--) {
+    if (coeff[i] != 0) {
+      if (i != degree && coeff[i] > 0)
+        printf(" + ");
+      else if (coeff[i] < 0)
+        printf(" - ");
+      printf("%.0f", coeff[i] < 0 ? -coeff[i] : coeff[i]);
+      if (i > 0) printf("x");
+      if (i > 1) printf("^%d", i);
+    }
+  }
+  printf("\n");
+}
+
+void HornersMethod() {
+  int degree, i;
+  float coefficient[MAX_SIZE], result, x;
+
+  printf("\nEnter degree of polynomial (max %d): ", MAX_SIZE - 1);
+  scanf("%d", &degree);
+
+  for(i=degree; i>=0; i--) {
+    printf("Enter coefficient for x^%d: ", i);
+    scanf("%f", &coefficient[i]);
+  }
+
+  printf("\nPolynomial: ");
+  displayPolynomial(degree, coefficient);
+
+  printf("Enter the value of x: ");
+  scanf("%f", &x);
+
+  // Horner's Method evaluation
+  result = coefficient[degree];
+  for (i = degree - 1; i >= 0; i--) {
+    result = result * x + coefficient[i];
+  }
+
+  printf("\nValue of polynomial at x = %.2f is %.2f\n", x, result);
+}
+```
+
+**Key Points**:
+
+- Input: Polynomial coefficients and value of x
+- Output: P(x) evaluated at given x
+- Time: O(n)
+- Space: O(1) for evaluation
+
+---
+
+## 9. Finding Maxima and Minima from Data Points
+
+### Description
+
+This method finds the maximum and minimum values of y from a given set of discrete data points (x, y). It performs a simple linear search through the data.
+
+### How It Works
+
+1. Initialize max and min with the first y value
+2. Traverse through all data points
+3. Update max/min and corresponding x values when found
+
+### Algorithm
+
+```
+maxY = minY = y[0]
+maxX = minX = x[0]
+for i = 1 to n-1:
+    if y[i] > maxY:
+        maxY = y[i], maxX = x[i]
+    if y[i] < minY:
+        minY = y[i], minX = x[i]
+```
+
+### Advantages
+
+- Simple and straightforward
+- Works with any data distribution
+- O(n) time complexity
+
+### Disadvantages
+
+- Only finds discrete max/min from given points
+- Does not find true extrema between data points
+- No interpolation for more accurate results
+
+---
+
+### Program Implementation
+
+```c
+#include <stdio.h>
+#define MAX 30
+
+void findMinMax(float x[], float y[], int n) {
+  int i;
+  float maxY = y[0], minY = y[0];
+  float maxX = x[0], minX = x[0];
+
+  for (i = 1; i < n; i++) {
+    if (y[i] > maxY) {
+      maxY = y[i];
+      maxX = x[i];
+    }
+    if (y[i] < minY) {
+      minY = y[i];
+      minX = x[i];
+    }
+  }
+
+  printf("\nMaximum Value: y = %.4f at x = %.4f\n", maxY, maxX);
+  printf("Minimum Value: y = %.4f at x = %.4f\n", minY, minX);
+}
+
+int main() {
+  float x[MAX], y[MAX];
+  int terms, i;
+
+  printf("Enter the number of terms of the table : ");
+  scanf("%d", &terms);
+  printf("Enter the corresponding values of x & y: \n");
+
+  for (i = 0; i < terms; i++) {
+    printf("Enter the value for x[%d]: ", i+1);
+    scanf("%f", &x[i]);
+    printf("Enter the value for y[%d]: ", i+1);
+    scanf("%f", &y[i]);
+  }
+
+  findMinMax(x, y, terms);
+  return 0;
+}
+```
+
+**Key Points**:
+
+- Input: Set of data points (x, y)
+- Output: Maximum and minimum y values with corresponding x
+- Time: O(n)
+- Space: O(1)
+
+---
+
+## Comparison Table
+
+| Feature              | Bisection       | Newton-Raphson   | Secant       | Fixed Point  | Synthetic Div. | Lagrange      | Newton Interp. | Horner's   |
+| -------------------- | --------------- | ---------------- | ------------ | ------------ | -------------- | ------------- | -------------- | ---------- |
+| Type                 | Root Finding    | Root Finding     | Root Finding | Root Finding | Division       | Interpolation | Interpolation  | Evaluation |
+| Convergence Rate     | Linear          | Quadratic        | Superlinear  | Linear       | N/A            | N/A           | N/A            | N/A        |
+| Time Complexity      | O(log((b-a)/ε)) | O(log(log(1/ε))) | O(n)         | O(n)         | O(n)           | O(n²)         | O(n²)          | O(n)       |
+| Space Complexity     | O(1)            | O(1)             | O(1)         | O(1)         | O(n)           | O(n)          | O(n²)          | O(1)       |
+| Equal Spacing Needed | No              | No               | No           | No           | No             | No            | Yes            | No         |
 
 ---
 
 ## Complexity Cheatsheet
 
-| Method             | Time Complexity    | Space Complexity | Convergence Order |
-| ------------------ | ------------------ | ---------------- | ----------------- |
-| Bisection          | O(log((b-a)/ε))    | O(1)             | Linear (1)        |
-| Newton-Raphson     | O(log(log(1/ε)))   | O(1)             | Quadratic (2)     |
-| Secant             | O(log(1/ε)/log(φ)) | O(1)             | ~1.618            |
-| Fixed Point        | O(n) iterations    | O(1)             | Linear (1)        |
-| Synthetic Division | O(n)               | O(n)             | Exact (1 pass)    |
+| Method                  | Time Complexity    | Space Complexity | Notes                         |
+| ----------------------- | ------------------ | ---------------- | ----------------------------- |
+| Bisection               | O(log((b-a)/ε))    | O(1)             | Linear convergence            |
+| Newton-Raphson          | O(log(log(1/ε)))   | O(1)             | Quadratic convergence         |
+| Secant                  | O(log(1/ε)/log(φ)) | O(1)             | Superlinear (~1.618)          |
+| Fixed Point             | O(n) iterations    | O(1)             | Linear convergence            |
+| Synthetic Division      | O(n)               | O(n)             | Single pass, exact            |
+| Lagrange Interpolation  | O(n²)              | O(n)             | Works for unequal spacing     |
+| Newton Forward/Backward | O(n²) + O(n)       | O(n²)            | Requires equal spacing        |
+| Horner's Method         | O(n)               | O(1)             | Optimal polynomial evaluation |
+| Min/Max from Data       | O(n)               | O(1)             | Simple linear search          |
 
 ---
