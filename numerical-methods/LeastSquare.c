@@ -8,8 +8,8 @@ void ExponentialReg(float x[], float y[], int n);
 
 int main() {
   int choice;
-  float x[MAX], y[MAX], sumx = 0, sumy = 0, sumxy = 0, sumx2 = 0;
-  int terms, i, j, flag = 1, dataAvailable = 0;
+  float x[MAX], y[MAX];
+  int terms, i, dataAvailable = 0;
   do {
     printf("\n--- Least Square Approximation ---\n");
     printf("1. Linear Least Square\n");
