@@ -48,8 +48,7 @@ $$\text{Compare } arr[j] \text{ with } arr[j+1] \text{ for } j = 0 \text{ to } n
 ### Program Implementation
 
 ```c
-#include <stdio.h>
-
+// Helper common function to swap elements of the array
 void swap(int *arr, int i, int j) {
   int temp = arr[i];
   arr[i] = arr[j];
@@ -117,7 +116,18 @@ $$\text{For } i = 0 \text{ to } n-2: \text{ find } \min(arr[i...n-1]) \text{ and
 ### Program Implementation
 
 ```c
-// To be implemented
+void selectionSort(int arr[], int size) {
+  int i, j;
+  // Selection sort algorithm
+  for(i=0; i<size - 1; i++) {
+    int min_index = i;
+    for(j=i+1; j<size; j++) {
+      if(arr[j] < arr[min_index])
+        min_index = j;
+    }
+    swap(arr, min_index, i);
+  }
+}
 ```
 
 ---

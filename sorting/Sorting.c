@@ -1,10 +1,14 @@
 #include <stdio.h>
+#define MAX 50
 
 void swap(int *arr, int i, int j);
-void bubbleSort();
+void bubbleSort(int arr[], int size);
+void selectionSort(int arr[], int size);
 
 int main() {
   int choice;
+  int i, j, size;
+  int arr[MAX];
   do {
     printf("1. Bubble Sort\n");
     printf("2. Selection Sort\n");
@@ -15,15 +19,34 @@ int main() {
     printf("7. Exit\n");
     printf("Enter your choice : ");
     scanf("%d", &choice);
+    if(choice != 7) {
+      printf("Enter the size of the array : ");
+      scanf("%d", &size);
+      printf("Enter %d elements of the array : \n", size);
+      for(i=0; i<size; i++) {
+        printf("Enter element of index [%d]: ", i);
+        scanf("%d", &arr[i]);
+      }
+    }
     switch (choice) {
       case 1:
-        bubbleSort();
+        bubbleSort(arr, size);
+        break;
+      case 2:
+        selectionSort(arr, size);
         break;
       case 7:
         printf("Exiting program...\n");
         break;
       default:
         printf("Invalid choice!\n");
+    }
+    if(choice != 7) {
+      printf("The sorted array is : \n");
+      for(i=0; i<size; i++) {
+        printf("%d ", arr[i]);
+      }
+      printf("\n");
     }
   }while (choice != 7);
   return 0;
@@ -35,16 +58,8 @@ void swap(int *arr, int i, int j) {
   arr[j] = temp;
 }
 
-void bubbleSort() {
-  int i, j, size;
-  printf("Enter the size of the array : ");
-  scanf("%d", &size);
-  printf("Enter %d elements of the array : \n", size);
-  int arr[size];
-  for(i=0; i<size; i++) {
-    printf("Enter element of index [%d]: ", i);
-    scanf("%d", &arr[i]);
-  }
+void bubbleSort(int arr[], int size) {
+  int i, j;
   // Bubble sort algorithm
   for(i=0; i<size - 1; i++) {
     for(j=0; j<size - i - 1; j++) {
@@ -52,9 +67,17 @@ void bubbleSort() {
         swap(arr, j, j+1);
     }
   }
-  printf("The sorted array is : \n");
-  for(i=0; i<size; i++) {
-    printf("%d ", arr[i]);
+}
+
+void selectionSort(int arr[], int size) {
+  int i, j;
+  // Selection sort algorithm
+  for(i=0; i<size - 1; i++) {
+    int min_index = i;
+    for(j=i+1; j<size; j++) {
+      if(arr[j] < arr[min_index])
+        min_index = j;
+    }
+    swap(arr, min_index, i);
   }
-  printf("\n");
 }
