@@ -1,9 +1,6 @@
 #include <graphics.h>
 #include <stdio.h>
 
-#define WIDTH 800
-#define HEIGHT 600
-
 void floodFill(int x, int y, int oldColor, int newColor) {
   int currentColor = getpixel(x, y);
 
