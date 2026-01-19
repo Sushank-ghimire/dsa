@@ -15,8 +15,14 @@
 3. [Region Filling Algorithms](#region-filling-algorithms)
    - [Flood Fill Algorithm](#5-flood-fill-algorithm)
    - [Boundary Fill Algorithm](#6-boundary-fill-algorithm)
-4. [Comparison Tables](#comparison-tables)
-5. [Setup & Compilation](#setup--compilation)
+4. [2D Transformations](#2d-transformations)
+   - [Translation](#7-translation)
+   - [Scaling](#8-scaling)
+   - [Rotation](#9-rotation)
+   - [Reflection](#10-reflection)
+   - [Shearing](#11-shearing)
+5. [Comparison Tables](#comparison-tables)
+6. [Setup & Compilation](#setup--compilation)
 
 ---
 
@@ -379,6 +385,302 @@ boundaryFill(x, y, boundaryColor, fillColor):
 
 ---
 
+## 2D Transformations
+
+### 7. Translation
+
+#### Description
+
+Translation moves an object from one position to another by adding translation distances (tx, ty) to the original coordinates.
+
+#### How It Works
+
+1. Take original coordinates (x, y)
+2. Add translation factors: `x' = x + tx`, `y' = y + ty`
+3. Apply to all vertices of the object
+
+#### Transformation Matrix
+
+```
+| x' |   | 1  0  tx |   | x |
+| y' | = | 0  1  ty | × | y |
+| 1  |   | 0  0  1  |   | 1 |
+```
+
+#### Algorithm
+
+```
+Translation(x, y, tx, ty):
+    x' = x + tx
+    y' = y + ty
+    return (x', y')
+```
+
+#### Advantages
+
+- Simplest transformation
+- Preserves shape and size
+- No distortion
+
+#### Disadvantages
+
+- Cannot be combined with other transformations using 2×2 matrix (requires homogeneous coordinates)
+
+#### Complexity
+
+| Metric    | Value                       |
+| --------- | --------------------------- |
+| **Time**  | O(n) where n = num vertices |
+| **Space** | O(1)                        |
+
+---
+
+### 8. Scaling
+
+#### Description
+
+Scaling changes the size of an object by multiplying coordinates by scaling factors (sx, sy). Scaling can be uniform (sx = sy) or non-uniform.
+
+#### How It Works
+
+1. Take original coordinates (x, y)
+2. Multiply by scaling factors: `x' = x × sx`, `y' = y × sy`
+3. Apply to all vertices
+
+#### Transformation Matrix
+
+```
+| x' |   | sx  0  |   | x |
+| y' | = | 0   sy | × | y |
+```
+
+#### Algorithm
+
+```
+Scaling(x, y, sx, sy):
+    x' = x * sx
+    y' = y * sy
+    return (x', y')
+```
+
+#### Types of Scaling
+
+| Type            | Condition | Effect                 |
+| --------------- | --------- | ---------------------- |
+| **Uniform**     | sx = sy   | Proportional scaling   |
+| **Non-uniform** | sx ≠ sy   | Stretching/compression |
+| **Enlargement** | s > 1     | Object grows           |
+| **Reduction**   | s < 1     | Object shrinks         |
+
+#### Advantages
+
+- Simple multiplication operation
+- Can enlarge or reduce objects
+
+#### Disadvantages
+
+- Scales about origin (may need translation for scaling about arbitrary point)
+- Non-uniform scaling can distort shape
+
+#### Complexity
+
+| Metric    | Value                       |
+| --------- | --------------------------- |
+| **Time**  | O(n) where n = num vertices |
+| **Space** | O(1)                        |
+
+---
+
+### 9. Rotation
+
+#### Description
+
+Rotation rotates an object about a pivot point (usually origin) by a specified angle θ. Positive angles rotate counter-clockwise.
+
+#### How It Works
+
+1. Convert angle from degrees to radians: `rad = θ × π / 180`
+2. Apply rotation formulas:
+   - `x' = x × cos(θ) - y × sin(θ)`
+   - `y' = x × sin(θ) + y × cos(θ)`
+
+#### Transformation Matrix
+
+```
+| x' |   | cos(θ)  -sin(θ) |   | x |
+| y' | = | sin(θ)   cos(θ) | × | y |
+```
+
+#### Algorithm
+
+```
+Rotation(x, y, angle):
+    rad = angle * PI / 180
+    x' = x * cos(rad) - y * sin(rad)
+    y' = x * sin(rad) + y * cos(rad)
+    return (x', y')
+```
+
+#### Rotation About Arbitrary Point (xp, yp)
+
+```
+1. Translate to origin: (x - xp, y - yp)
+2. Rotate about origin
+3. Translate back: add (xp, yp)
+```
+
+#### Advantages
+
+- Preserves shape and size
+- Can rotate to any angle
+
+#### Disadvantages
+
+- Requires trigonometric functions
+- Floating-point arithmetic needed
+
+#### Complexity
+
+| Metric    | Value                       |
+| --------- | --------------------------- |
+| **Time**  | O(n) where n = num vertices |
+| **Space** | O(1)                        |
+
+---
+
+### 10. Reflection
+
+#### Description
+
+Reflection creates a mirror image of an object about a specified axis or line.
+
+#### How It Works
+
+Different reflection axes have different transformations:
+
+| Reflection About | x'  | y'  |
+| ---------------- | --- | --- |
+| **X-axis**       | x   | -y  |
+| **Y-axis**       | -x  | y   |
+| **Origin**       | -x  | -y  |
+| **Line y = x**   | y   | x   |
+| **Line y = -x**  | -y  | -x  |
+
+#### Transformation Matrices
+
+**Reflection about X-axis:**
+
+```
+| x' |   | 1   0  |   | x |
+| y' | = | 0  -1  | × | y |
+```
+
+**Reflection about Y-axis:**
+
+```
+| x' |   | -1  0 |   | x |
+| y' | = | 0   1 | × | y |
+```
+
+**Reflection about Origin:**
+
+```
+| x' |   | -1  0  |   | x |
+| y' | = | 0  -1  | × | y |
+```
+
+#### Algorithm
+
+```
+ReflectionAboutXAxis(x, y):
+    x' = x
+    y' = -y
+    return (x', y')
+```
+
+#### Advantages
+
+- Creates perfect mirror images
+- Useful for symmetrical designs
+
+#### Disadvantages
+
+- Limited to predefined axes without complex calculations
+
+#### Complexity
+
+| Metric    | Value                       |
+| --------- | --------------------------- |
+| **Time**  | O(n) where n = num vertices |
+| **Space** | O(1)                        |
+
+---
+
+### 11. Shearing
+
+#### Description
+
+Shearing slants the shape of an object. It shifts one coordinate in proportion to the other, creating a "skewed" effect.
+
+#### How It Works
+
+1. **X-shear**: `x' = x + shx × y`, `y' = y`
+2. **Y-shear**: `x' = x`, `y' = y + shy × x`
+3. **Combined**: `x' = x + shx × y`, `y' = y + shy × x`
+
+#### Transformation Matrices
+
+**X-Shear:**
+
+```
+| x' |   | 1   shx |   | x |
+| y' | = | 0   1   | × | y |
+```
+
+**Y-Shear:**
+
+```
+| x' |   | 1   0   |   | x |
+| y' | = | shy 1   | × | y |
+```
+
+#### Algorithm
+
+```
+Shearing(x, y, shx, shy):
+    x' = x + shx * y
+    y' = y + shy * x
+    return (x', y')
+```
+
+#### Shearing Effects
+
+| Factor  | Effect                       |
+| ------- | ---------------------------- |
+| shx > 0 | Slants right (positive x)    |
+| shx < 0 | Slants left (negative x)     |
+| shy > 0 | Slants upward (positive y)   |
+| shy < 0 | Slants downward (negative y) |
+
+#### Advantages
+
+- Creates italic/slanted effects
+- Useful for creating 3D illusions
+
+#### Disadvantages
+
+- Distorts the original shape
+- Area may change with combined shearing
+
+#### Complexity
+
+| Metric    | Value                       |
+| --------- | --------------------------- |
+| **Time**  | O(n) where n = num vertices |
+| **Space** | O(1)                        |
+
+---
+
 ## Comparison Tables
 
 ### Line Drawing Algorithms
@@ -409,19 +711,15 @@ boundaryFill(x, y, boundaryColor, fillColor):
 | **Interior Requirement** | Uniform color            | Any color (non-boundary)       |
 | **Best For**             | Replacing specific color | Filling enclosed boundaries    |
 
----
+### 2D Transformations
 
-## 8-Connected Variants
-
-Both filling algorithms can be extended to 8-connected versions:
-
-```c
-// Additional recursive calls for 8-connected
-fill(x + 1, y + 1, ...);  // Bottom-right
-fill(x - 1, y - 1, ...);  // Top-left
-fill(x + 1, y - 1, ...);  // Top-right
-fill(x - 1, y + 1, ...);  // Bottom-left
-```
+| Transformation  | Preserves Shape | Preserves Size | Matrix Type     |
+| --------------- | --------------- | -------------- | --------------- |
+| **Translation** | ✓               | ✓              | 3×3 Homogeneous |
+| **Scaling**     | ✓ (if uniform)  | ✗              | 2×2             |
+| **Rotation**    | ✓               | ✓              | 2×2             |
+| **Reflection**  | ✓               | ✓              | 2×2             |
+| **Shearing**    | ✗               | ✗              | 2×2             |
 
 ---
 
@@ -437,18 +735,6 @@ gcc program.c -o program -lgraph
 ./program
 ```
 
-### Alternative: SDL2 Setup
-
-```bash
-# Install SDL2
-sudo apt-get install libsdl2-dev
-
-# Compile with SDL2
-gcc program.c -o program -lSDL2
-```
-
----
-
 ## Quick Reference
 
 | Algorithm            | Purpose       | Key Function               |
@@ -459,5 +745,10 @@ gcc program.c -o program -lSDL2
 | **Midpoint Ellipse** | Draw ellipses | 4-way symmetry, 2 regions  |
 | **Flood Fill**       | Fill region   | Replace old color          |
 | **Boundary Fill**    | Fill region   | Stop at boundary           |
+| **Translation**      | Move object   | Add (tx, ty)               |
+| **Scaling**          | Resize object | Multiply (sx, sy)          |
+| **Rotation**         | Rotate object | Trigonometric functions    |
+| **Reflection**       | Mirror object | Negate coordinates         |
+| **Shearing**         | Slant object  | Add proportional offset    |
 
 ---
