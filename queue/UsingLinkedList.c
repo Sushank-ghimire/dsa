@@ -73,8 +73,8 @@ int main() {
   Node *front = NULL, *rear = NULL;
   int choice;
   do {
-    printf("1. Insert\n");
-    printf("2. Delete\n");
+    printf("1. Enqueue\n");
+    printf("2. Dequeue\n");
     printf("3. Display\n");
     printf("4. Exit\n");
     choice = inputData("Enter your choice : ");

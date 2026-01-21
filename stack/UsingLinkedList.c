@@ -22,18 +22,18 @@ void push(Node **stack) {
 }
 
 void display(Node *stack) {
-  if(stack == NULL) {
+  if (stack == NULL) {
     printf("Stack is empty.\n");
     return;
   }
 
+  printf("Top -> ");
   Node *temp = stack;
-  printf("NULL");
-  while(temp != NULL) {
-    printf(" <- %d", temp->data);
+  while (temp != NULL) {
+    printf("%d ", temp->data);
     temp = temp->next;
   }
-  printf("\n");
+  printf("-> NULL\n");
 }
 
 void pop(Node **stack) {
