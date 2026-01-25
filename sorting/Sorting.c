@@ -6,6 +6,8 @@ void bubbleSort(int arr[], int size);
 void selectionSort(int arr[], int size);
 void heapSort(int arr[], int size);
 void heapify(int arr[], int size, int i);
+int partition(int arr[], int low, int high);
+void quickSort(int arr[], int low, int high);
 
 int main() {
   int choice;
@@ -39,6 +41,9 @@ int main() {
         break;
       case 3:
         heapSort(arr, size);
+        break;
+      case 5:
+        quickSort(arr, 0, size - 1);;
         break;
       case 7:
         printf("Exiting program...\n");
@@ -124,5 +129,27 @@ void heapSort(int arr[], int size) {
 
     // Call max heapify on the reduced heap
     heapify(arr, i, 0);
+  }
+}
+
+int partition(int arr[], int low, int high) {
+  int pivot = arr[high];
+  int i = low - 1;
+
+  for(int j=low; j<=high - 1; j++) {
+    if(arr[j] < pivot) {
+      i++;
+      swap(arr, i, j);
+    }
+  }
+  swap(arr, i+1, high);
+  return i+1;
+}
+
+void quickSort(int arr[], int low, int high) {
+  if(low < high) {
+    int partitionIndex = partition(arr, low, high);
+    quickSort(arr, low, partitionIndex - 1);
+    quickSort(arr, partitionIndex + 1, high);
   }
 }
