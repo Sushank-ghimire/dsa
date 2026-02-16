@@ -211,7 +211,80 @@ void choleskyMethod() {
 }
 
 // Jacobi Method
-void jacobiMethod(){}
+/*
+ * Solves Ax = b iteratively using Jacobi method.
+ * Input Example same for (Gauss-Seidel Method):
+ * Enter the order of the system: 3
+ * Enter the coefficients row-wise:
+ * A[1][1]: 10
+ * A[1][2]: -1
+ * A[1][3]: 2
+ * A[2][1]: -1
+ * A[2][2]: 11
+ * A[2][3]: -1
+ * A[3][1]: 2
+ * A[3][2]: -1
+ * A[3][3]: 10
+ * Enter the constants (b):
+ * b[1]: 6
+ * b[2]: 25
+ * b[3]: -11
+ *
+ * Output:
+ * Solution vector x:
+ * x1 = 1.00
+ * x2 = 2.00
+ * x3 = -1.00
+ */
+void jacobiMethod() {
+  int n, i, j, iter = 0;
+  float A[MAX][MAX], b[MAX], x[MAX], x_new[MAX];
+
+  n = input("Enter the order of the system: ");
+  printf("Enter the coefficients row-wise:\n");
+  for(i = 0; i < n; i++)
+    for(j = 0; j < n; j++) {
+      printf("A[%d][%d]: ", i+1, j+1);
+      scanf("%f", &A[i][j]);
+    }
+
+  printf("Enter the constants (b):\n");
+  for(i = 0; i < n; i++) {
+    printf("b[%d]: ", i+1);
+    scanf("%f", &b[i]);
+    x[i] = 0;  // Initial guess
+  }
+
+  while(1) {
+    for(i = 0; i < n; i++) {
+      float sum = 0;
+      for(j = 0; j < n; j++) {
+        if(j != i)
+          sum += A[i][j] * x[j];
+      }
+      if(fabs(A[i][i]) < EPSILON) {
+        printf("Mathematical Error: Division by zero.\n");
+        return;
+      }
+      x_new[i] = (b[i] - sum) / A[i][i];
+    }
+
+    // Check for convergence
+    float max_diff = 0;
+    for(i = 0; i < n; i++) {
+      float diff = fabs(x_new[i] - x[i]);
+      if(diff > max_diff)
+        max_diff = diff;
+      x[i] = x_new[i];
+    }
+
+    iter++;
+    if(max_diff < EPSILON || iter > 1000) break;  // Max iterations to avoid infinite loop
+    printf("\nSolution vector x:\n");
+    for(i = 0; i < n; i++)
+      printf("x%d = %.2f\n", i+1, x[i]);
+  }
+}
 
 // Gauss Seidel Method
 void gaussSeidelMethod(){}
