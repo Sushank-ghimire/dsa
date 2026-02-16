@@ -10,6 +10,13 @@
  * Output:
  *        x1 = 1.00
  *        x2 = 3.00
+ *
+ * input: 2
+ *        1 2
+ *        3 4
+ * Output:
+ *       -2.00  1.00
+ *       1.50  -0.50
  */
 
 int input(const char *msg);
@@ -26,6 +33,10 @@ void gaussEliminationWithPivoting(int n, float matrix[MAX][MAX+1], float solutio
 // Gauss Jordan
 void performGaussJordan();
 void gaussJordan(int n, float matrix[MAX][MAX+1], float solution[MAX]);
+
+// Gauss Jordan Inverse Method
+void performMatrixInversion();
+void gaussJordanInverse(int n, float matrix[MAX][2 * MAX]);
 
 int main() {
   int choice;
@@ -46,6 +57,9 @@ int main() {
         break;
       case 3:
         performGaussJordan();
+        break;
+      case 4:
+        performMatrixInversion();
         break;
       case 5:
         printf("Exiting program...\n");
@@ -229,7 +243,7 @@ void performGaussJordan() {
 
   printf("\nSolution:\n");
   for (int i = 0; i < n; i++)
-    printf("x%d = %.4f\n", i + 1, solution[i]);
+    printf("x%d = %.2f\n", i + 1, solution[i]);
 }
 
 void gaussJordan(int n, float matrix[MAX][MAX + 1], float solution[MAX]) {
@@ -259,4 +273,64 @@ void gaussJordan(int n, float matrix[MAX][MAX + 1], float solution[MAX]) {
   /* Extract solutions */
   for (int i = 0; i < n; i++)
     solution[i] = matrix[i][n];
+}
+
+// Gauss Jordan Matrix Inversion Method
+void performMatrixInversion() {
+  int n;
+  float matrix[MAX][2 * MAX];
+
+  n = input("Enter the order of the matrix: ");
+
+  printf("Enter the matrix elements:\n");
+
+  /* Input matrix and form augmented matrix [A | I] */
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      printf("A[%d][%d]: ", i + 1, j + 1);
+      scanf("%f", &matrix[i][j]);
+    }
+
+    for (int j = n; j < 2 * n; j++) {
+      if (j - n == i)
+        matrix[i][j] = 1.0;   // Identity matrix
+      else
+        matrix[i][j] = 0.0;
+    }
+  }
+  gaussJordanInverse(n, matrix);
+}
+
+void gaussJordanInverse(int n, float matrix[MAX][2 * MAX]) {
+
+  for (int i = 0; i < n; i++) {
+
+    if (fabs(matrix[i][i]) < 1e-6) {
+      printf("Matrix is singular. Inverse does not exist.\n");
+      return;
+    }
+
+    /* Make pivot = 1 */
+    float pivot = matrix[i][i];
+    for (int j = 0; j < 2 * n; j++) {
+      matrix[i][j] /= pivot;
+    }
+
+    /* Make other elements in column zero */
+    for (int k = 0; k < n; k++) {
+      if (k != i) {
+        float factor = matrix[k][i];
+        for (int j = 0; j < 2 * n; j++)
+          matrix[k][j] -= factor * matrix[i][j];
+      }
+    }
+  }
+
+  /* Display Inverse Matrix */
+  printf("\nInverse Matrix:\n");
+  for (int i = 0; i < n; i++) {
+    for (int j = n; j < 2 * n; j++)
+      printf("%.2f  ", matrix[i][j]);
+    printf("\n");
+  }
 }
