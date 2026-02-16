@@ -23,6 +23,10 @@ void swapRows(int n, float matrix[MAX][MAX+1], int row1, int row2);
 void performPartialPivoting();
 void gaussEliminationWithPivoting(int n, float matrix[MAX][MAX+1], float solution[MAX]);
 
+// Gauss Jordan
+void performGaussJordan();
+void gaussJordan(int n, float matrix[MAX][MAX+1], float solution[MAX]);
+
 int main() {
   int choice;
   do {
@@ -39,6 +43,9 @@ int main() {
         break;
       case 2:
         performPartialPivoting();
+        break;
+      case 3:
+        performGaussJordan();
         break;
       case 5:
         printf("Exiting program...\n");
@@ -199,4 +206,57 @@ void gaussEliminationWithPivoting(int n, float matrix[MAX][MAX + 1], float solut
 
     solution[i] = sum / matrix[i][i];
   }
+}
+
+// Gauss Jordan Method
+void performGaussJordan() {
+  int n;
+  float matrix[MAX][MAX + 1];
+  float solution[MAX];
+
+  n = input("Enter the order of the matrix: ");
+
+  printf("Enter the augmented matrix (row-wise):\n");
+
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j <= n; j++) {
+      printf("A[%d][%d]: ", i + 1, j + 1);
+      scanf("%f", &matrix[i][j]);
+    }
+  }
+
+  gaussJordan(n, matrix, solution);
+
+  printf("\nSolution:\n");
+  for (int i = 0; i < n; i++)
+    printf("x%d = %.4f\n", i + 1, solution[i]);
+}
+
+void gaussJordan(int n, float matrix[MAX][MAX + 1], float solution[MAX]) {
+
+  for (int i = 0; i < n; i++) {
+
+    if (fabs(matrix[i][i]) < 1e-6) {
+      printf("Mathematical Error: Division by zero detected.\n");
+      return;
+    }
+
+    /* Make pivot element 1 */
+    float pivot = matrix[i][i];
+    for (int j = 0; j <= n; j++)
+      matrix[i][j] /= pivot;
+
+    /* Eliminate other rows */
+    for (int k = 0; k < n; k++) {
+      if (k != i) {
+        float factor = matrix[k][i];
+        for (int j = 0; j <= n; j++)
+          matrix[k][j] -= factor * matrix[i][j];
+      }
+    }
+  }
+
+  /* Extract solutions */
+  for (int i = 0; i < n; i++)
+    solution[i] = matrix[i][n];
 }
