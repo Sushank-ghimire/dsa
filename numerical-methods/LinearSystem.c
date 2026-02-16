@@ -139,7 +139,76 @@ void doLittleLU() {
 }
 
 // Cholesky Method
-void choleskyMethod(){}
+/*
+ * Input Example:
+ * Enter the order of the square matrix: 3
+ * Enter the matrix elements (row-wise):
+ * A[1][1]: 4
+ * A[1][2]: 12
+ * A[1][3]: -16
+ * A[2][1]: 12
+ * A[2][2]: 37
+ * A[2][3]: -43
+ * A[3][1]: -16
+ * A[3][2]: -43
+ * A[3][3]: 98
+ *
+ * Output:
+ * Lower Triangular Matrix (L):
+ *  2.00  0.00  0.00
+ *  6.00  1.00  0.00
+ * -8.00  5.00  3.00
+ */
+void choleskyMethod() {
+  int n;
+  float A[MAX][MAX], L[MAX][MAX];
+
+  n = input("Enter the order of the square matrix : ");
+  printf("Enter the matrix elements (row-wise):\n");
+  for(int i = 0; i < n; i++) {
+    for(int j = 0; j < n; j++) {
+      printf("A[%d][%d]: ", i+1, j+1);
+      scanf("%f", &A[i][j]);
+    }
+  }
+
+  /* Initialize L to zero */
+  for(int i = 0; i < n; i++)
+    for(int j = 0; j < n; j++)
+      L[i][j] = 0;
+
+  /* Cholesky Decomposition */
+  for(int i = 0; i < n; i++) {
+    for(int j = 0; j <= i; j++) {
+      float sum = 0;
+      for(int k = 0; k < j; k++)
+        sum += L[i][k] * L[j][k];
+
+      if(i == j) {
+        float val = A[i][i] - sum;
+        if(val < 0) {
+          printf("Matrix is not positive definite.\n");
+          return;
+        }
+        L[i][j] = sqrt(val);
+      } else {
+        if(fabs(L[j][j]) < EPSILON) {
+          printf("Mathematical Error: Division by zero.\n");
+          return;
+        }
+        L[i][j] = (A[i][j] - sum) / L[j][j];
+      }
+    }
+  }
+
+  /* Display L matrix */
+  printf("\nLower Triangular Matrix (L):\n");
+  for(int i = 0; i < n; i++) {
+    for(int j = 0; j < n; j++)
+      printf("%8.2f ", L[i][j]);
+    printf("\n");
+  }
+}
 
 // Jacobi Method
 void jacobiMethod(){}
