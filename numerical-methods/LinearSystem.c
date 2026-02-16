@@ -333,5 +333,5 @@ void gaussSeidelMethod (){
   }
   printf("\nSolution vector x:\n");
   for(i = 0; i < n; i++)
-    printf("x%d = %.6f\n", i+1, x[i]);
+    printf("x%d = %.2f\n", i+1, x[i]);
 }
