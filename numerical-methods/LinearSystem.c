@@ -287,4 +287,51 @@ void jacobiMethod() {
 }
 
 // Gauss Seidel Method
-void gaussSeidelMethod(){}
+/*
+ * Solves Ax = b iteratively using Gauss-Seidel method.
+ * Input and output similar to Jacobi.
+ */
+void gaussSeidelMethod (){
+  int n, i, j, iter = 0;
+  float A[MAX][MAX], b[MAX], x[MAX];
+
+  n = input("Enter the order of the system: ");
+  printf("Enter the coefficients row-wise:\n");
+  for(i = 0; i < n; i++)
+    for(j = 0; j < n; j++) {
+      printf("A[%d][%d]: ", i+1, j+1);
+      scanf("%f", &A[i][j]);
+    }
+
+  printf("Enter the constants (b):\n");
+  for(i = 0; i < n; i++) {
+    printf("b[%d]: ", i+1);
+    scanf("%f", &b[i]);
+    x[i] = 0;  // Initial guess
+  }
+
+  while(1) {
+    float max_diff = 0;
+    for(i = 0; i < n; i++) {
+      float sum = 0;
+      for(j = 0; j < n; j++) {
+        if(j != i)
+            sum += A[i][j] * x[j];
+      }
+      if(fabs(A[i][i]) < EPSILON) {
+        printf("Mathematical Error: Division by zero.\n");
+        return;
+      }
+      float x_old = x[i];
+      x[i] = (b[i] - sum) / A[i][i];
+      float diff = fabs(x[i] - x_old);
+      if(diff > max_diff)
+        max_diff = diff;
+    }
+    iter++;
+    if(max_diff < EPSILON || iter > 1000) break;  // Convergence or max iterations
+  }
+  printf("\nSolution vector x:\n");
+  for(i = 0; i < n; i++)
+    printf("x%d = %.6f\n", i+1, x[i]);
+}
