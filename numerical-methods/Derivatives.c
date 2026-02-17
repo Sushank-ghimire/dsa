@@ -7,6 +7,10 @@ double func(double x);
 void forwardDifference();
 void forwardDividedDifference();
 
+// Backward method functions
+void backwardDifference();
+void backwardDividedDifference();
+
 int main() {
   int choice;
   do {
@@ -24,6 +28,12 @@ int main() {
         break;
       case 2:
         forwardDividedDifference();
+        break;
+      case 3:
+        backwardDifference();
+        break;
+      case 4:
+        backwardDividedDifference();
         break;
       case 6:
         printf("Exiting program...\n");
@@ -87,4 +97,41 @@ void forwardDividedDifference() {
   double derivative = (y1-y0) / (x1-x0);
 
   printf("Derivative at x = %.2lf is %.2lf\n", x0, derivative);
+}
+
+/*
+ * Backward Divided Difference Formula:
+ * f'(x) ≈ (f(x) - f(x - h)) / h
+*/
+void backwardDifference() {
+  double x, h;
+
+  printf("Enter the value of x: ");
+  scanf("%lf", &x);
+
+  printf("Enter the value of h (step size): ");
+  scanf("%lf", &h);
+
+  double derivative = (func(x) - func(x-h)) / h;
+  printf("Derivative at x = %.2lf is %.2lf\n", x, derivative);
+}
+
+void backwardDividedDifference() {
+  int n;
+
+  n = input("Enter number of data points: ");
+  scanf("%d", &n);
+  if (n < 2) {
+    printf("At least two data points are required.\n");
+    return;
+  }
+
+  double x[n], y[n];
+  printf("Enter the values of x and y:\n");
+  for (int i = 0; i < n; i++) {
+    printf("x[%d] y[%d]: ", i, i);
+    scanf("%lf %lf", &x[i], &y[i]);
+  }
+  double derivative = (x[n-1] - x[n-2]) / (y[n-1] - y[n-2]);
+  printf("Derivative at x = %.2lf is %.2lf\n", x[n-1], derivative);
 }
