@@ -11,6 +11,9 @@ void forwardDividedDifference();
 void backwardDifference();
 void backwardDividedDifference();
 
+// Central Difference method function
+void CentralDifference();
+
 int main() {
   int choice;
   do {
@@ -35,6 +38,9 @@ int main() {
       case 4:
         backwardDividedDifference();
         break;
+      case 5:
+        CentralDifference();
+        break;
       case 6:
         printf("Exiting program...\n");
         break;
@@ -43,6 +49,7 @@ int main() {
     }
     printf("\n");
   } while (choice != 6);
+  return 0;
 }
 
 int input(const char *msg) {
@@ -134,4 +141,23 @@ void backwardDividedDifference() {
   }
   double derivative = (x[n-1] - x[n-2]) / (y[n-1] - y[n-2]);
   printf("Derivative at x = %.2lf is %.2lf\n", x[n-1], derivative);
+}
+
+/*
+ * Central Difference Formula:
+ * f'(x) ≈ (f(x + h) - f(x - h)) / (2h)
+ */
+void CentralDifference() {
+  double x, h;
+  double derivative;
+
+  printf("Enter the value of x: ");
+  scanf("%lf", &x);
+
+  printf("Enter the value of step size h: ");
+  scanf("%lf", &h);
+
+  derivative = (func(x+h) - func(x-h)) / 2*h;
+
+  printf("Derivative at x = %.2lf is %.2lf\n", x, derivative);
 }
