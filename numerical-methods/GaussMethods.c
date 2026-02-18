@@ -68,6 +68,7 @@ int main() {
         printf("Invalid choice!");
     }
   } while (choice != 5);
+  printf("\n");
   return 0;
 }
 
