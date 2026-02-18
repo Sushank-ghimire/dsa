@@ -28,6 +28,7 @@ int main() {
       default:
         printf("Invalid choice!\n");
     }
+    printf("\n");
   } while (choice != 3);
 }
 
