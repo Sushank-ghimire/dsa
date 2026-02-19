@@ -58,7 +58,7 @@ int main() {
         shellSort(arr, size);
         break;
       case 4:
-        mergeSort(arr, 0, size);
+        mergeSort(arr, 0, size - 1);
         break;
       case 5:
         quickSort(arr, 0, size - 1);;
@@ -79,7 +79,8 @@ int main() {
       }
       printf("\n");
     }
-  }while (choice != 7);
+     printf("\n");
+  } while (choice != 7);
   return 0;
 }
 
@@ -182,9 +183,9 @@ void merge(int arr[], int low, int mid, int high) {
   int leftArr[n1], rightArr[n2];
 
   for(i=0; i<n1; i++)
-    leftArr[i] = arr[low+1];
+    leftArr[i] = arr[low + i];
   for(i=0; i<n2; i++)
-    rightArr[i] = arr[mid + 1 + j];
+    rightArr[i] = arr[mid + 1 + i];
 
   i = 0, j = 0, k = low;
   while(i < n1 && j < n2) {
