@@ -9,6 +9,9 @@ void bubbleSort(int arr[], int size);
 // Selection sort function declarations
 void selectionSort(int arr[], int size);
 
+// Shell sort function declarations
+void shellSort(int arr[], int size);
+
 // Heap sort function declarations
 void heapSort(int arr[], int size);
 void heapify(int arr[], int size, int i);
@@ -28,10 +31,10 @@ int main() {
   do {
     printf("1. Bubble Sort\n");
     printf("2. Selection Sort\n");
-    printf("3. Heap Sort\n");
+    printf("3. Shell Sort\n");
     printf("4. Merge Sort\n");
     printf("5. Quick Sort\n");
-    printf("6. Shell Sort\n");
+    printf("6. Heap Sort\n");
     printf("7. Exit\n");
     printf("Enter your choice : ");
     scanf("%d", &choice);
@@ -52,13 +55,16 @@ int main() {
         selectionSort(arr, size);
         break;
       case 3:
-        heapSort(arr, size);
+        shellSort(arr, size);
         break;
       case 4:
         mergeSort(arr, 0, size);
         break;
       case 5:
         quickSort(arr, 0, size - 1);;
+        break;
+      case 6:
+        heapSort(arr, size);
         break;
       case 7:
         printf("Exiting program...\n");
@@ -208,5 +214,27 @@ void mergeSort(int arr[], int low, int high) {
     mergeSort(arr, mid + 1, high);
 
     merge(arr, low, mid, high);
+  }
+}
+
+
+void shellSort(int arr[], int size) {
+  int i, j, k, temp;
+
+  // Start with a large gap and reduce it
+  for (i = size / 2; i > 0; i = i / 2) {
+    // Do a gapped insertion sort for this gap size
+    for (j = i; j < size; j++) {
+      // Store the current element to be inserted
+      temp = arr[j];
+
+      // Shift earlier gap-sorted elements until the correct position for arr[j] is found
+      for (k = j; k >= i && arr[k - i] > temp; k -= i) {
+        arr[k] = arr[k - i];
+      }
+
+      // Put temp (the original arr[j]) in its correct location
+      arr[k] = temp;
+    }
   }
 }
