@@ -1,10 +1,11 @@
 #include <stdio.h>
 #define MAX 50
 
-void sequentialSearch(int arr[MAX], int size);
+int sequentialSearch(int arr[MAX], int, int);
 void swap(int *arr, int i, int j);
-void bubbleSort(int arr[MAX], int size);
-int binarySearch(int arr[], int low, int high, int target);
+void bubbleSort(int arr[MAX], int);
+int binarySearch(int arr[], int, int, int);
+int iterativeBinarySearch(int arr[], int, int);
 
 int main() {
   int choice, size;
@@ -25,26 +26,27 @@ int main() {
         scanf("%d", &arr[i]);
       }
 
-      if(choice == 1){
-        bubbleSort(arr, size);
-        printf("The sorted array is : \n");
-        for(int i=0; i<size; i++)
-          printf("Element of index[%d] is %d.\n", i, arr[i]);
-        printf("\n");
+      if(choice == 1 || choice == 2){
+        if(choice == 1) {
+          bubbleSort(arr, size);
+          printf("The sorted array is : \n");
+          for(int i=0; i<size; i++)
+            printf("Element of index[%d] is %d.\n", i, arr[i]);
+          printf("\n");
+        }
         int target = 1;
         while(target) {
           printf("Enter your choice (0 to exit || search target) : ");
           scanf("%d", &target);
           if(!target) break;
-          int index = binarySearch(arr, 0, size-1, target);
+          int index = choice == 1 ? binarySearch(arr, 0, size-1, target) : sequentialSearch(arr, size, target);
           if(index == -1) {
             printf("Element %d not found.\n", target);
           } else {
             printf("Element %d found at index %d.\n", target, index);
           }
         }
-      } else if (choice == 2)
-        sequentialSearch(arr, size);
+      }
     } else if (choice == 3) {
       printf("Exiting program...\n");
       break;
@@ -55,25 +57,15 @@ int main() {
   return 0;
 }
 
-
-void sequentialSearch(int arr[MAX], int size) {
-  int target, index = -1;
-  do {
-    printf("Enter your choice (0 to exit || search target) : ");
-    scanf("%d", &target);
-
-    for(int i=0; i<size; i++) {
-      if(arr[i] == target) {
-        index = i;
-        break;
-      }
+int sequentialSearch(int arr[MAX], int size, int target) {
+  int index = -1;
+  for(int i=0; i<size; i++) {
+    if(arr[i] == target) {
+      index = i;
+      break;
     }
-    if(index == -1) {
-      printf("Element %d not found.\n", target);
-    } else {
-      printf("Element %d found at index %d.\n", target, index);
-    }
-  } while (target != 0);
+  }
+  return index;
 }
 
 void swap(int *arr, int i, int j) {
@@ -101,6 +93,23 @@ int binarySearch(int arr[], int low, int high, int target) {
     if (arr[mid] > target)
       return binarySearch(arr, low, mid - 1, target);
     return binarySearch(arr, mid + 1, high, target);
+  }
+  return -1;
+}
+
+int iterativeBinarySearch(int arr[], int size, int target) {
+  int low = 0;
+  int high = size - 1;
+
+  while(low <= high) {
+    int mid = (low + high) / 2;
+
+    if(arr[mid] == target)
+      return mid;
+    else if (arr[mid] > target)
+      high = mid - 1;
+    else
+      low = mid + 1;
   }
   return -1;
 }
