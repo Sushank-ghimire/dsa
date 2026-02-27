@@ -10,7 +10,7 @@ Node* createNode(int);
 Node* insert(Node*, int);
 Node* search(Node*, int);
 Node* findMin(Node*);
-Node* deleteNode(Node*, int);
+Node* deleteNode(Node*, int, int*);
 
 void inorder(Node*);
 void preorder(Node*);
@@ -19,6 +19,7 @@ void postorder(Node*);
 int main() {
   struct Node* root = NULL;
   int choice, value;
+  int flag = 0;
 
   while(1) {
     printf("1. Insert\n");
@@ -35,12 +36,23 @@ int main() {
       case 1:
         printf("Enter value: ");
         scanf("%d", &value);
-        root = insert(root, value);
+
+        if(search(root, value)) {
+          printf("Duplicate value not allowed!\n");
+        } else {
+          root = insert(root, value);
+          printf("Value inserted!\n");
+        }
         break;
       case 2:
         printf("Enter value to delete: ");
         scanf("%d", &value);
-        root = deleteNode(root, value);
+        root = deleteNode(root, value, &flag);
+
+        if(flag)
+          printf("Value deleted!\n");
+        else
+          printf("Value not found!\n");
         break;
 
       case 3:
@@ -53,16 +65,19 @@ int main() {
         break;
 
         case 4:
+          printf("Inorder : ");
           inorder(root);
           printf("\n");
           break;
 
         case 5:
+          printf("Preorder : ");
           preorder(root);
           printf("\n");
           break;
 
         case 6:
+          printf("Postorder : ");
           postorder(root);
           printf("\n");
           break;
@@ -71,9 +86,9 @@ int main() {
         default:
           printf("Invalid choice!\n");
     }
+    printf("\n");
   }
 }
-
 
 Node* createNode(int data) {
   Node* newNode = (Node*)malloc(sizeof(Node));
@@ -87,63 +102,61 @@ Node* createNode(int data) {
 }
 
 Node* insert(Node* root, int data) {
-  if(root == NULL)
+  if(root == NULL) {
     return createNode(data);
-
-  if(data < root->data)
+  }
+  if(data < root->data) {
     root->left = insert(root->left, data);
-  else if(data > root->data)
+  } else if (data > root->data) {
     root->right = insert(root->right, data);
-  else
-    printf("Duplicate value not allowed!\n");
-
+  }
   return root;
 }
 
-Node* search(Node* root, int key) {
-  if(root == NULL || root->data == key)
+Node* search(Node* root, int key)  {
+  if(root == NULL || root->data == key) {
     return root;
-
-  if(key < root->data)
+  }
+  if(key < root->data) {
     return search(root->left, key);
-
-  return search(root->right, key);
+  } else {
+    return search(root->right, key);
+  }
 }
 
 Node* findMin(Node* root) {
-  while(root && root->left != NULL)
+  if(root == NULL)
+    return NULL;
+  while(root->left != NULL)
     root = root->left;
   return root;
 }
 
-Node* deleteNode(Node* root, int key) {
+Node* deleteNode(Node* root, int key, int* deleted) {
   if(root == NULL)
-    return root;
-
+    return NULL;
   if(key < root->data)
-    root->left = deleteNode(root->left, key);
-  else if(key > root->data)
-    root->right = deleteNode(root->right, key);
+    root->left = deleteNode(root->left, key, deleted);
+  else if (key > root->data)
+    root->right = deleteNode(root->right, key, deleted);
   else {
-      if(root->left == NULL && root->right == NULL) {
-        free(root);
-        return NULL;
-      }
-
-      else if(root->left == NULL) {
-        Node* temp = root->right;
-        free(root);
-        return temp;
-      }
-      else if(root->right == NULL) {
-        Node* temp = root->left;
-        free(root);
-        return temp;
-      }
-
+    *deleted = 1;
+    if(root->left == NULL && root->right == NULL) {
+      free(root);
+      return NULL;
+    } else if (root->left == NULL) {
+      Node* temp = root->right;
+      free(root);
+      return temp;
+    } else if (root->right == NULL) {
+      Node* temp = root->left;
+      free(root);
+      return temp;
+    } else {
       Node* temp = findMin(root->right);
       root->data = temp->data;
-      root->right = deleteNode(root->right, temp->data);
+      root->right = deleteNode(root->right, temp->data, deleted);
+    }
   }
   return root;
 }
