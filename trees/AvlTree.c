@@ -106,8 +106,8 @@ Node *rightRotate(Node *y) {
 }
 
 Node *leftRotate(Node *x) {
-  Node *y = x->left;
-  Node *t2 = y->right;
+  Node *y = x->right;
+  Node *t2 = y->left;
 
   y->right = x;
   x->left = t2;
