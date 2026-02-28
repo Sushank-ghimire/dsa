@@ -64,27 +64,27 @@ int main() {
           printf("Value Not Found!\n");
         break;
 
-        case 4:
-          printf("Inorder : ");
-          inorder(root);
-          printf("\n");
-          break;
+      case 4:
+        printf("Inorder : ");
+        inorder(root);
+        printf("\n");
+        break;
 
-        case 5:
-          printf("Preorder : ");
-          preorder(root);
-          printf("\n");
-          break;
+      case 5:
+        printf("Preorder : ");
+        preorder(root);
+        printf("\n");
+        break;
 
-        case 6:
-          printf("Postorder : ");
-          postorder(root);
-          printf("\n");
-          break;
-        case 7:
-          exit(0);
-        default:
-          printf("Invalid choice!\n");
+      case 6:
+        printf("Postorder : ");
+        postorder(root);
+        printf("\n");
+        break;
+      case 7:
+        exit(0);
+      default:
+        printf("Invalid choice!\n");
     }
     printf("\n");
   }
