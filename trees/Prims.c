@@ -68,6 +68,10 @@ void PrimsMST(int v) {
 
   for(int count = 0; count < v-1; count++) {
     int u = minKey(key, mstSet, v);
+    if(u == -1) {
+      printf("Graph is disconnected. MST not possible.\n");
+      return;
+    }
     mstSet[u] = 1;
 
     for(int j = 0; j < v; j++) {
