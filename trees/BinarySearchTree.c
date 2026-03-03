@@ -17,7 +17,7 @@ void preorder(Node*);
 void postorder(Node*);
 
 int main() {
-  struct Node* root = NULL;
+  Node* root = NULL;
   int choice, value;
   int flag = 0;
 
@@ -47,6 +47,8 @@ int main() {
       case 2:
         printf("Enter value to delete: ");
         scanf("%d", &value);
+
+        flag = 0;
         root = deleteNode(root, value, &flag);
 
         if(flag)
@@ -65,18 +67,30 @@ int main() {
         break;
 
       case 4:
+        if(root == NULL){
+          printf("Tree is empty\n");
+          break;
+        }
         printf("Inorder : ");
         inorder(root);
         printf("\n");
         break;
 
       case 5:
+        if(root == NULL){
+          printf("Tree is empty\n");
+          break;
+        }
         printf("Preorder : ");
         preorder(root);
         printf("\n");
         break;
 
       case 6:
+        if(root == NULL){
+          printf("Tree is empty\n");
+          break;
+        }
         printf("Postorder : ");
         postorder(root);
         printf("\n");
