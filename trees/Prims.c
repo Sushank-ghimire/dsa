@@ -32,7 +32,7 @@ int main() {
 }
 
 int minKey(int key[], int mstSet[], int v) {
-  int min = INT_MAX, min_index;
+  int min = INT_MAX, min_index = -1;
   for(int i = 0; i < v; i++) {
     if(!mstSet[i] && key[i] < min) {
       min = key[i];
@@ -71,9 +71,9 @@ void PrimsMST(int v) {
     mstSet[u] = 1;
 
     for(int j = 0; j < v; j++) {
-      if(graph[u][j] != INT_MAX && graph[u][j] < key[j]) {
-        key[j] = graph[u][j];
-        parent[j] = u;
+      if(!mstSet[j] && graph[u][j] != INT_MAX && graph[u][j] < key[j]) {
+          key[j] = graph[u][j];
+          parent[j] = u;
       }
     }
   }
@@ -81,7 +81,7 @@ void PrimsMST(int v) {
   int totalCost = 0;
   printf("\nEdges in MST (Prim's): \n");
   for(int i = 1; i < v; i++) {
-    printf("%d --  %d == %d\n", parent[i], i, key[i]);
+    printf("%d -- %d == %d\n", parent[i], i, key[i]);
     totalCost += key[i];
   }
   printf("Total cost = %d\n", totalCost);
