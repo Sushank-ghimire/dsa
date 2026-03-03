@@ -34,9 +34,8 @@ void postorder(Node*);
 
 int main() {
   Node* root = NULL;
-  int choice, flag;
+  int choice, flag, value;
   while(1) {
-    int choice, value;
     printf("1. Insert\n");
     printf("2. Delete\n");
     printf("3. Search\n");
@@ -67,7 +66,10 @@ int main() {
       case 3:
         printf("Enter value to search: ");
         scanf("%d", &value);
-        if(!search(root, value))
+
+        if(search(root, value))
+          printf("Value Found!\n");
+        else
           printf("Value Not Found!\n");
         break;
       case 4:
@@ -109,7 +111,7 @@ int height(Node* node) {
 }
 
 Node *findMin(Node* root) {
-  if(root->left == NULL)
+  if(root == NULL)
     return NULL;
   while(root->left != NULL)
     root = root->left;
@@ -118,6 +120,10 @@ Node *findMin(Node* root) {
 
 Node *createNode(int data) {
   Node *node = (Node *) malloc(sizeof(Node));
+  if(node == NULL) {
+    printf("Memory allocation failed\n");
+    exit(1);
+  }
   node->data = data;
   node->left = node->right = NULL;
   node->height = 1;
@@ -144,7 +150,7 @@ Node *leftRotate(Node *x) {
   x->right = t2;
 
   x->height = max(height(x->left), height(x->right)) + 1;
-  y->height = max(height(y->left), height(x->right)) + 1;
+  y->height = max(height(y->left), height(y->right)) + 1;
   return y;
 }
 
@@ -182,6 +188,8 @@ Node *insert(Node *root, int key) {
 }
 
 Node *deleteNode(Node* root, int key) {
+  if(root == NULL)
+    return root;
   if(root == NULL || !search(root, key)) {
     printf("Value not found\n");
     return root;
@@ -238,16 +246,13 @@ Node *search(Node* root, int key) {
   if(root == NULL)
     return NULL;
 
-  if(key == root->data) {
-    printf("Value %d found in tree.\n", key);
+  if(key == root->data)
     return root;
-  }
 
   if(key < root->data)
     return search(root->left, key);
   else
     return search(root->right, key);
-  return root;
 }
 
 int getBalance(Node* node) {
