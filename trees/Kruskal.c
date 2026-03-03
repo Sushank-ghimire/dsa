@@ -76,12 +76,18 @@ void unionSet(Subset subsets[], int x, int y) {
 void kruskalMST(int v, int e) {
   Edge edges[e];
   printf("\nEnter each edge in format:\n");
-  printf("source destination weight\n");
+  printf("(source, destination, weight)\n");
   printf("(Vertices must be between 0 and %d)\n\n", v - 1);
 
   for(int i = 0; i < e; i++) {
     printf("Edge %d: ", i + 1);
     scanf("%d %d %d", &edges[i].u, &edges[i].v, &edges[i].weight);
+
+    if(edges[i].u == edges[i].v) {
+      printf("Self-loop not allowed! Try again.\n");
+      i--;
+      continue;
+    }
 
     if(edges[i].u >= v || edges[i].v >= v || edges[i].u < 0 || edges[i].v < 0) {
       printf("Invalid vertex! Try again.\n");
@@ -109,5 +115,9 @@ void kruskalMST(int v, int e) {
       count++;
     }
   }
-  printf("Total Cost = %d\n", totalCost);
+  if(count != v - 1) {
+    printf("Graph is disconnected. MST not possible.\n");
+  } else {
+    printf("Total Cost = %d\n", totalCost);
+  }
 }
