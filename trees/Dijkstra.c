@@ -29,7 +29,7 @@ int main() {
 }
 
 int minDistance(int dist[], int visited[], int V) {
-  int min = INT_MAX, min_index;
+  int min = INT_MAX, min_index = -1;
 
   for(int i = 0; i < V; i++)
     if(!visited[i] && dist[i] <= min) {
@@ -41,8 +41,8 @@ int minDistance(int dist[], int visited[], int V) {
 
 void Dijkstra(int V) {
   int graph[V][V];
-  printf("\nEnter adjacency matrix (0 = no edge) : \n");
 
+  printf("Enter adjacency matrix (0 = no edge, weights > 0):\n");
   for(int i = 0; i < V; i++) {
     for(int j = 0; j < V; j++) {
       printf("Edge weight from %d to %d : ", i, j);
@@ -53,9 +53,12 @@ void Dijkstra(int V) {
   }
 
   int src;
-  printf("Enter souce vertex (0 to %d) : ", V-1);
+  printf("Enter source vertex (0 to %d) : ", V-1);
   scanf("%d", &src);
-
+  if(src < 0 || src >= V) {
+    printf("Invalid source vertex!\n");
+    return;
+  }
   int dist[V], visited[V];
 
   for(int i = 0; i < V; i++) {
@@ -67,6 +70,7 @@ void Dijkstra(int V) {
 
   for(int count = 0; count < V-1; count++) {
     int u = minDistance(dist, visited, V);
+    if(u == -1) break;
     visited[u] = 1;
 
     for(int v = 0; v < V; v++) {
